@@ -1,3 +1,4 @@
 [submodule "server/jack-file"]
 	path = server/jack-file
 	url = https://github.com/gutobenn/ma-preview-jack-file.git
+	ignore = dirty
