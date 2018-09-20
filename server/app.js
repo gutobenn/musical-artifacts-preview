@@ -45,6 +45,7 @@ async function processQueue(){
 
     let relative_order_dir_path = 'processed_files/' + order_id;
     // TODO handle errors here. check success. set a timeout? include an 'error' status
+    async function lala(bk_order_id) {
       const cp = spawn('python3',
                   ['./python_scripts/process_audio.py',
                   orders[bk_order_id].artifact,
