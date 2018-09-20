@@ -36,12 +36,11 @@ def processFile(artifactId, preset, input_file, output_dir):
         if jack_start_process.returncode != 0:
             raise ValueError("Could not start JACK")
 
-        print("-> Converting OPUS to WAV...")
-        print("opusdec --force-wav " + input_file + " " + input_converted_file)
-        opusdec_process = subprocess.Popen("opusdec --force-wav '" + input_file + "' '" + input_converted_file + "'", shell=True, stdout=subprocess.PIPE)
-        opusdec_process.wait()
-        if opusdec_process.returncode != 0:
-            raise ValueError("Could not convert OPUS to WAV")
+        print("-> Converting file to WAV...")
+        ffmpeg_process = subprocess.Popen("ffmpeg -i '" + input_file + "' -c:v copy '" + input_converted_file + "'", shell=True, stdout=subprocess.PIPE)
+        ffmpeg_process.wait()
+        if ffmpeg_process.returncode != 0:
+            raise ValueError("Could not convert file to WAV")
 
         print("-> Starting file2jack...")
         file2jack_process = subprocess.Popen("cd jack-file && ./file2jack -at 0 -i '" + input_converted_file + "'", shell=True, stdout=subprocess.PIPE)
