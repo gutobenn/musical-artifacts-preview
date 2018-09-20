@@ -1,0 +1,58 @@
+.SelectInstrument {
+  font-size: 1.6rem;
+  text-align: center;
+  position: relative;
+
+  .instruments {
+    margin-top: 70px;
+  }
+
+  .instrument {
+    display: inline-block;
+    text-align: center;
+    border-radius: 10px;
+    background: #fff;
+    margin-left: 10px;
+    margin-right: 10px;
+
+    &:hover {
+      background: #f8f8f8;
+    }
+
+    a {
+      opacity: 0.85;
+      color: #000;
+      width: 100%;
+      padding: 12px;
+      display: table-cell;
+
+      &:hover {
+        opacity: 1;
+      }
+
+      span {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  #midi_keyboard_img {
+    width: 170px;
+  }
+
+  #electric_guitar_img {
+    width: 110px;
+  }
+
+  #drums_img {
+    width: 125px;
+  }
+
+  .credits {
+    float: right;
+    bottom: 0;
+    font-size: 13px;
+    position: absolute;
+    right: 0;
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "server_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "author": "",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "express-http-proxy": "^1.2.0",
+    "fs-extra": "^7.0.0",
+    "multer": "^1.3.1",
+    "uuid": "^3.3.2"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "node": true,
+      "es6": true
+    }
+  }
+}

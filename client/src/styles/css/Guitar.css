@@ -1,0 +1,217 @@
+.Guitar {
+  position: relative;
+}
+.Guitar .selected_header {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #f8f8f8;
+  height: 30px;
+}
+.Guitar .selected_header .selected_header_title {
+  text-align: center;
+  width: 100%;
+  display: block;
+  font-size: 0.9rem;
+  letter-spacing: 0rem;
+  font-weight: 700;
+}
+.Guitar .selected_header .back_link {
+  font-size: 1.8rem;
+  margin-right: 20px;
+  float: left;
+  line-height: 1rem;
+}
+.Guitar .record_player {
+  display: inline-block;
+  vertical-align: 3px;
+}
+.Guitar .recordStuff {
+  display: inline-block;
+  margin: 10px 0 30px;
+}
+.Guitar .recordStuff > div {
+  display: inline-block;
+}
+.Guitar .recordStuff .sound-wave {
+  display: none;
+  height: 30px;
+  margin-top: -5px;
+}
+.Guitar .recordStuff.recording .sound-wave {
+  display: inline-block;
+}
+.Guitar .recordStuff .record_button_img {
+  width: 20px;
+  margin-right: 15px;
+  opacity: 0.5;
+}
+.Guitar .recordStuff .record_button_img:hover, .Guitar .recordStuff .record_button_img.recording {
+  opacity: 1;
+  cursor: pointer;
+}
+.Guitar .recordStuff .first_record_msg {
+  font-size: 14px;
+}
+.Guitar .start_processing_button_img {
+  width: 30px;
+  opacity: 0.8;
+  margin-top: 25px;
+  margin-left: 5px;
+}
+.Guitar .start_processing_button_img:hover, .Guitar .start_processing_button_img:focus {
+  opacity: 1;
+  cursor: pointer;
+}
+.Guitar .start_processing_button_img.disabled {
+  cursor: not-allowed;
+}
+.Guitar .start_processing_button_img.disabled:hover, .Guitar .start_processing_button_img.disabled:focus {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+.Guitar .select_artifact_div {
+  width: calc(50% - 52px);
+  float: left;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #eee;
+  margin-right: 10px;
+}
+.Guitar .select_artifact_div div {
+  margin-bottom: 5px;
+}
+.Guitar .select_artifact_div select {
+  width: 100%;
+  background: #f8f8f8;
+  border: 1px solid #eee;
+  padding: 5px;
+  border-radius: 5px;
+  font-family: "Lato";
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  float: left;
+}
+.Guitar .select_artifact_div select:hover {
+  background: #eee;
+}
+.Guitar .select_artifact_div button {
+  background: #333;
+  color: white;
+  font-weight: 700;
+  border: 1px solid black;
+  padding: 3px 10px;
+  border-radius: 0px 5px 5px 0px;
+  font-size: 17px;
+  border-left: 0;
+  cursor: pointer;
+}
+.Guitar .select_artifact_div button:hover {
+  background: #000;
+}
+.Guitar .selected_instrument_img {
+  height: 22px;
+}
+.Guitar .loading-message {
+  border: 1px solid #eee;
+  border-radius: 5px;
+  position: absolute;
+  margin: 0 auto;
+  text-align: center;
+  top: 0;
+  right: 0;
+  box-shadow: 3px 3px 5px #f8f8f8;
+  padding: 2px 15px 0 2px;
+  background: #fff;
+  z-index: 2;
+}
+.Guitar .loading-message img {
+  height: 40px;
+  margin: 0;
+}
+.Guitar .loading-message span {
+  margin-left: 2px;
+  padding-top: 10px;
+  float: right;
+}
+.Guitar .list_of_recordings {
+  padding-left: 0;
+}
+.Guitar .list_of_recordings li .remove_artifact {
+  float: right;
+  color: red;
+  font-weight: bold;
+  cursor: pointer;
+}
+.Guitar .list_of_recordings li .view_artifact {
+  margin-right: 10px;
+  margin-top: 1px;
+  font-size: 0.78rem;
+}
+.Guitar .list_of_recordings li:hover {
+  background: #f8f8f8;
+}
+.Guitar .list_of_recordings li {
+  padding: 7px 10px;
+  border-bottom: 1px solid #f8f8f8;
+  list-style: none;
+  font-size: 0.9rem;
+  cursor: default;
+  padding-bottom: 4px;
+}
+.Guitar .list_of_recordings li:hover {
+  background: #f8f8f8;
+}
+@media (min-width: 600px) {
+  .Guitar .list_of_recordings li > div {
+    float: right;
+  }
+}
+.Guitar .list_of_recordings li > div > div {
+  display: inline-block;
+  top: -4px;
+}
+.Guitar .list_of_recordings li audio {
+  height: 28px;
+}
+.Guitar .list_of_recordings li .download_button {
+  height: 14px;
+  margin-left: 10px;
+  vertical-align: 4px;
+  opacity: 0.75;
+}
+
+/* Custom Plyr style */
+.plyr--audio .plyr__controls {
+  padding: 0;
+  background: transparent;
+}
+
+.plyr__control svg {
+  height: 12px;
+  width: 12px;
+}
+
+.plyr__controls {
+  padding: 0;
+}
+.plyr__controls .plyr__time,
+.plyr__controls .plyr__volume,
+.plyr__controls .plyr__menu {
+  display: none;
+}
+
+.plyr--full-ui input[type=range] {
+  color: #666;
+}
+
+.plyr--audio .plyr__control.plyr__tab-focus,
+.plyr--audio .plyr__control:hover,
+.plyr--audio .plyr__control[aria-expanded=true] {
+  background: #666;
+}
+
+.plyr__control.plyr__tab-focus {
+  box-shadow: none;
+}
+
+/*# sourceMappingURL=Guitar.css.map */
