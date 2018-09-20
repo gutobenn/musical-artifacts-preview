@@ -10,7 +10,7 @@ from database import Database
 
 """
 This script downloads and updates all guitarix artifacts.
-It populates the database and generates the json file server by API.
+It populates the database and generates the json file served by API.
 """
 
 def download_artifact(id, loadedArtifact=None):

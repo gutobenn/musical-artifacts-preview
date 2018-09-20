@@ -49,7 +49,7 @@ def processFile(artifactId, preset, input_file, output_dir):
 
         print("-> Starting Guitarix...")
         guitarix_process = subprocess.Popen("guitarix -N -p 7000", shell=True, stdout=subprocess.PIPE)
-        time.sleep(0.5) # TODO instead of a fixed sleep, keep checking until guitarix port is ready
+        time.sleep(1) # TODO instead of a fixed sleep, keep checking until guitarix port is ready
         nc = nclib.Netcat(('localhost', 7000), verbose=True)
         jsonrpc_msg = '{"jsonrpc":"2.0","method":"setpreset","params":["ma-' + str(artifactId) + '","' + preset + '"]}\n'
         nc.send(bytes(jsonrpc_msg, 'utf-8'))

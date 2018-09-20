@@ -11,7 +11,9 @@
     "react-mic": "^12.2.2",
     "react-plyr": "^2.1.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.5"
+    "react-scripts": "1.1.5",
+    "sass": "^1.14.0",
+    "yarn": "^1.9.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -19,7 +21,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "sass": "sass --watch src/styles/scss:src/styles/css",
-    "sass:build": "sass — update src/styles/scss:src/styles/css"
+    "sass:build": "sass --update src/styles/scss:src/styles/css"
   },
   "devDependencies": {
     "dotenv": "^6.0.0"
