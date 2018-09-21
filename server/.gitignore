@@ -1,5 +1,7 @@
-/node_modules
-/uploads
-/processed_files
-/python_scripts/__pycache__
-/python_scripts/database.db
+node_modules
+uploads/*
+!uploads/.gitkeep
+processed_files/*
+!processed_files/.gitkeep
+python_scripts/__pycache__
+python_scripts/database.db
