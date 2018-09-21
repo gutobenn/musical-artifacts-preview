@@ -42,8 +42,8 @@ class SelectInstrument extends Component {
             </Link>
           </div>
         </div>
-        <Link to="/credits" className="credits">
-          <span><FormattedMessage id="credits" /></span>
+        <Link to="/about" className="about">
+          <span><FormattedMessage id="about" /></span>
         </Link>
       </div>
     );

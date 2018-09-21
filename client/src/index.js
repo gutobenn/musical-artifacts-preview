@@ -6,7 +6,7 @@ import SelectInstrument from './SelectInstrument';
 import Guitar from './Guitar';
 import Midi from './Midi';
 import Drums from './Drums';
-import Credits from './Credits';
+import About from './About';
 import NoMatch from './NoMatch';
 import registerServiceWorker from './registerServiceWorker';
 import en from 'react-intl/locale-data/en';
@@ -30,7 +30,7 @@ ReactDOM.render(
         <Route path="/guitar" component={Guitar} />
         <Route path="/midi" component={Midi} />
         <Route path="/drums" component={Drums} />
-        <Route path="/credits" component={Credits} />
+        <Route path="/about" component={About} />
         <Route component={NoMatch} />
       </Switch>
     </ BrowserRouter>

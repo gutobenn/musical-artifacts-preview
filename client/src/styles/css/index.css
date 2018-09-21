@@ -28,10 +28,12 @@ b, strong {
   background: #fff;
   margin: 0 auto;
   min-height: 500px;
+  display: grid;
 }
 
 #internal {
   padding: 15px;
+  display: grid;
 }
 
 /*# sourceMappingURL=index.css.map */

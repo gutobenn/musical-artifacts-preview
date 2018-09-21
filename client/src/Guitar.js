@@ -247,7 +247,7 @@ class Guitar extends Component {
          <div className="clearfix"></div>
          {processedFiles.length > 0
            && <div>
-                <h5><FormattedMessage id="processed_files" /></h5>
+                <h5 className="processed_files_title"><FormattedMessage id="processed_files" /></h5>
                 <ul className="list_of_recordings">
                   {processedFiles.map((processed_file, index) => (
                    <li key={processed_file.file}>
@@ -261,6 +261,9 @@ class Guitar extends Component {
                 </ul>
               </div>
          }
+       </div>
+       <div className="linkToMa">
+         <FormattedMessage id="artifacts_listed_here" values={{ link: <a href="https://musical-artifacts.com/?formats=gx" target="_blank"><FormattedMessage id="musical_artifacts" /></a> }} />
        </div>
      </div>
    );

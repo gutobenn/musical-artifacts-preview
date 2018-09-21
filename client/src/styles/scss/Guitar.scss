@@ -61,6 +61,7 @@
 
     .first_record_msg {
       font-size: 14px;
+      vertical-align: 5px;
     }
   }
 
@@ -162,8 +163,14 @@
     }
   }
 
+  .processed_files_title {
+    margin-top: 35px;
+    margin-bottom: 10px;
+  }
+
   .list_of_recordings {
     padding-left: 0;
+    margin-top: 0;
   }
 
   .list_of_recordings  li {
@@ -216,6 +223,12 @@
       vertical-align: 4px;
       opacity: 0.75;
     }
+  }
+
+  .linkToMa {
+    font-size: 0.85rem;
+    position: absolute;
+    bottom: 0;
   }
 }
 
