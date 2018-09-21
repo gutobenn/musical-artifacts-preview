@@ -48,11 +48,21 @@
     width: 125px;
   }
 
-  .about {
-    float: right;
+  .about,
+  .change_language {
     bottom: 0;
     font-size: 13px;
     position: absolute;
+  }
+
+  .about {
+    float: right;
     right: 0;
   }
+
+  .change_language {
+    float: left;
+    left: 0;
+  }
+
 }

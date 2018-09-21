@@ -42,6 +42,9 @@ class SelectInstrument extends Component {
             </Link>
           </div>
         </div>
+        <div className="change_language">
+          <Link to="/?lang=pt" target="_self">Português</Link> | <Link to="/?lang=en" target="_self">English</Link>
+        </div>
         <Link to="/about" className="about">
           <span><FormattedMessage id="about" /></span>
         </Link>

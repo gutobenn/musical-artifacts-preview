@@ -39,12 +39,19 @@
 .SelectInstrument #drums_img {
   width: 125px;
 }
-.SelectInstrument .about {
-  float: right;
+.SelectInstrument .about,
+.SelectInstrument .change_language {
   bottom: 0;
   font-size: 13px;
   position: absolute;
+}
+.SelectInstrument .about {
+  float: right;
   right: 0;
+}
+.SelectInstrument .change_language {
+  float: left;
+  left: 0;
 }
 
 /*# sourceMappingURL=SelectInstrument.css.map */
