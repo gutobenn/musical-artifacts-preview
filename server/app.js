@@ -81,7 +81,6 @@ app.get('/orders', (req, res) => res.status(200).json({'orders': orders}));
 
 app.get('/queue', (req, res) => res.status(200).json(queue));
 
-// Request processing. receive mode = midi | guitar, recebe links dos artefatos pra testar, return uuid
 app.post('/order', upload.single('file'), (req, res, next) => {
   if (!req.body || !req.body.mode) {
     return next({ status: 400, message: 'mode field is required' });
