@@ -9,8 +9,8 @@ import './styles/css/SelectInstrument.css';
 class SelectInstrument extends Component {
   render() {
     const intl = this.props.intl;
-    const guitar_string = intl.formatMessage({
-      id: "guitar"
+    const guitar_bass_string = intl.formatMessage({
+      id: "guitar_bass"
     });
     const midi_controller_string = intl.formatMessage({
       id: "midi_controller"
@@ -24,9 +24,9 @@ class SelectInstrument extends Component {
         <h4><FormattedMessage id="select_instrument" /></h4>
         <div className="instruments">
           <div className="instrument">
-            <Link to="/guitar">
-              <img src={guitar} id="electric_guitar_img" alt={guitar_string} /><br />
-              <span><FormattedMessage id="guitar" /></span>
+            <Link to="/guitarix">
+              <img src={guitar} id="electric_guitar_img" alt={guitar_bass_string} /><br />
+              <span><FormattedMessage id="guitar_bass" /></span>
             </Link>
           </div>
           <div className="instrument">

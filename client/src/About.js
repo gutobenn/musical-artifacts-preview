@@ -8,7 +8,7 @@ class About extends Component {
       <div>
         <h2><FormattedMessage id="about" /></h2>
         <FormattedMessage id="project_description" /><br /><br />
-        <FormattedMessage id="link_to_github" values={{ link: <a href="https://github.com/gutobenn/musical-artifacts-preview" target="_blank">GitHub</a> }} />
+        <FormattedMessage id="link_to_github" values={{ link: <a href="https://github.com/gutobenn/musical-artifacts-preview" target="_blank" rel="noopener noreferrer">GitHub</a> }} />
         <br /><br />
         <b><FormattedMessage id="icons_credits" /></b>:
         <ul className="icons_credits">

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import SelectInstrument from './SelectInstrument';
-import Guitar from './Guitar';
+import Guitarix from './Guitarix';
 import Midi from './Midi';
 import Drums from './Drums';
 import About from './About';
@@ -27,7 +27,7 @@ ReactDOM.render(
     <BrowserRouter>
       <Switch>
         <Route path="/" exact={true} component={SelectInstrument} />
-        <Route path="/guitar" component={Guitar} />
+        <Route path="/guitarix" component={Guitarix} />
         <Route path="/midi" component={Midi} />
         <Route path="/drums" component={Drums} />
         <Route path="/about" component={About} />

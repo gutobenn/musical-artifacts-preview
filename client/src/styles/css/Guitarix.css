@@ -1,12 +1,12 @@
-.Guitar {
+.Guitarix {
   position: relative;
 }
-.Guitar .selected_header {
+.Guitarix .selected_header {
   margin-bottom: 10px;
   border-bottom: 1px solid #f8f8f8;
   height: 30px;
 }
-.Guitar .selected_header .selected_header_title {
+.Guitarix .selected_header .selected_header_title {
   text-align: center;
   width: 100%;
   display: block;
@@ -14,62 +14,62 @@
   letter-spacing: 0rem;
   font-weight: 700;
 }
-.Guitar .selected_header .back_link {
+.Guitarix .selected_header .back_link {
   font-size: 1.8rem;
   margin-right: 20px;
   float: left;
   line-height: 1rem;
 }
-.Guitar .record_player {
+.Guitarix .record_player {
   display: inline-block;
   vertical-align: 3px;
 }
-.Guitar .recordStuff {
+.Guitarix .recordStuff {
   display: inline-block;
   margin: 10px 0 30px;
 }
-.Guitar .recordStuff > div {
+.Guitarix .recordStuff > div {
   display: inline-block;
 }
-.Guitar .recordStuff .sound-wave {
+.Guitarix .recordStuff .sound-wave {
   display: none;
   height: 30px;
   margin-top: -5px;
 }
-.Guitar .recordStuff.recording .sound-wave {
+.Guitarix .recordStuff.recording .sound-wave {
   display: inline-block;
 }
-.Guitar .recordStuff .record_button_img {
+.Guitarix .recordStuff .record_button_img {
   width: 20px;
   margin-right: 15px;
   opacity: 0.5;
 }
-.Guitar .recordStuff .record_button_img:hover, .Guitar .recordStuff .record_button_img.recording {
+.Guitarix .recordStuff .record_button_img:hover, .Guitarix .recordStuff .record_button_img.recording {
   opacity: 1;
   cursor: pointer;
 }
-.Guitar .recordStuff .first_record_msg {
+.Guitarix .recordStuff .first_record_msg {
   font-size: 14px;
   vertical-align: 5px;
 }
-.Guitar .start_processing_button_img {
+.Guitarix .start_processing_button_img {
   width: 30px;
   opacity: 0.8;
   margin-top: 25px;
   margin-left: 5px;
 }
-.Guitar .start_processing_button_img:hover, .Guitar .start_processing_button_img:focus {
+.Guitarix .start_processing_button_img:hover, .Guitarix .start_processing_button_img:focus {
   opacity: 1;
   cursor: pointer;
 }
-.Guitar .start_processing_button_img.disabled {
+.Guitarix .start_processing_button_img.disabled {
   cursor: not-allowed;
 }
-.Guitar .start_processing_button_img.disabled:hover, .Guitar .start_processing_button_img.disabled:focus {
+.Guitarix .start_processing_button_img.disabled:hover, .Guitarix .start_processing_button_img.disabled:focus {
   opacity: 0.8;
   cursor: not-allowed;
 }
-.Guitar .select_artifact_div {
+.Guitarix .select_artifact_div {
   width: calc(50% - 52px);
   float: left;
   padding: 10px;
@@ -77,10 +77,10 @@
   border: 1px solid #eee;
   margin-right: 10px;
 }
-.Guitar .select_artifact_div div {
+.Guitarix .select_artifact_div div {
   margin-bottom: 5px;
 }
-.Guitar .select_artifact_div select {
+.Guitarix .select_artifact_div select {
   width: 100%;
   background: #f8f8f8;
   border: 1px solid #eee;
@@ -92,10 +92,10 @@
   -webkit-appearance: none;
   float: left;
 }
-.Guitar .select_artifact_div select:hover {
+.Guitarix .select_artifact_div select:hover {
   background: #eee;
 }
-.Guitar .select_artifact_div button {
+.Guitarix .select_artifact_div button {
   background: #333;
   color: white;
   font-weight: 700;
@@ -106,13 +106,13 @@
   border-left: 0;
   cursor: pointer;
 }
-.Guitar .select_artifact_div button:hover {
+.Guitarix .select_artifact_div button:hover {
   background: #000;
 }
-.Guitar .selected_instrument_img {
+.Guitarix .selected_instrument_img {
   height: 22px;
 }
-.Guitar .loading-message {
+.Guitarix .loading-message {
   border: 1px solid #eee;
   border-radius: 5px;
   position: absolute;
@@ -125,38 +125,38 @@
   background: #fff;
   z-index: 2;
 }
-.Guitar .loading-message img {
+.Guitarix .loading-message img {
   height: 40px;
   margin: 0;
 }
-.Guitar .loading-message span {
+.Guitarix .loading-message span {
   margin-left: 2px;
   padding-top: 10px;
   float: right;
 }
-.Guitar .processed_files_title {
+.Guitarix .processed_files_title {
   margin-top: 35px;
   margin-bottom: 10px;
 }
-.Guitar .list_of_recordings {
+.Guitarix .list_of_recordings {
   padding-left: 0;
   margin-top: 0;
 }
-.Guitar .list_of_recordings li .remove_artifact {
+.Guitarix .list_of_recordings li .remove_artifact {
   float: right;
   color: red;
   font-weight: bold;
   cursor: pointer;
 }
-.Guitar .list_of_recordings li .view_artifact {
+.Guitarix .list_of_recordings li .view_artifact {
   margin-right: 10px;
   margin-top: 1px;
   font-size: 0.78rem;
 }
-.Guitar .list_of_recordings li:hover {
+.Guitarix .list_of_recordings li:hover {
   background: #f8f8f8;
 }
-.Guitar .list_of_recordings li {
+.Guitarix .list_of_recordings li {
   padding: 7px 10px;
   border-bottom: 1px solid #f8f8f8;
   list-style: none;
@@ -164,28 +164,28 @@
   cursor: default;
   padding-bottom: 4px;
 }
-.Guitar .list_of_recordings li:hover {
+.Guitarix .list_of_recordings li:hover {
   background: #f8f8f8;
 }
 @media (min-width: 600px) {
-  .Guitar .list_of_recordings li > div {
+  .Guitarix .list_of_recordings li > div {
     float: right;
   }
 }
-.Guitar .list_of_recordings li > div > div {
+.Guitarix .list_of_recordings li > div > div {
   display: inline-block;
   top: -4px;
 }
-.Guitar .list_of_recordings li audio {
+.Guitarix .list_of_recordings li audio {
   height: 28px;
 }
-.Guitar .list_of_recordings li .download_button {
+.Guitarix .list_of_recordings li .download_button {
   height: 14px;
   margin-left: 10px;
   vertical-align: 4px;
   opacity: 0.75;
 }
-.Guitar .linkToMa {
+.Guitarix .linkToMa {
   font-size: 0.85rem;
   position: absolute;
   bottom: 0;
@@ -225,4 +225,4 @@
   box-shadow: none;
 }
 
-/*# sourceMappingURL=Guitar.css.map */
+/*# sourceMappingURL=Guitarix.css.map */

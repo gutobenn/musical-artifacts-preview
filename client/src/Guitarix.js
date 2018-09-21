@@ -6,12 +6,13 @@ import start_processing_button from './images/start_processing.svg';
 import spinner from './images/spinner.svg';
 import download_image from './images/download.svg';
 import { Link } from 'react-router-dom';
-import './styles/css/Guitar.css';
+import './styles/css/Guitarix.css';
 import classNames from 'classnames';
 import Plyr from 'react-plyr';
 import { sortBy } from 'lodash';
+import DetectBrowser from 'react-detect-browser';
 
-class Guitar extends Component {
+class Guitarix extends Component {
   constructor(props) {
     super(props);
     this.API_URL = "http://localhost:3000"; // TODO define it in a config file
@@ -111,7 +112,7 @@ class Guitar extends Component {
 
     const method = "POST";
     var body = new FormData();
-    body.append('mode', 'guitar');
+    body.append('mode', 'guitarix');
     body.append('file', record.blob);
     body.append('preset', presetToTest);
     body.append('artifact', artifactToTest);
@@ -191,83 +192,91 @@ class Guitar extends Component {
       {'disabled': presetToTest === null || artifactToTest === null || record === null || isProcessing}
     );
     return (
-     <div className="Guitar">
-       <div className="selected_header">
-         <Link to="/" className="back_link" title={select_another_instrument_string}>&laquo;</Link>
-         <div className="selected_header_title"><FormattedMessage id="preview_guitarix_artifacts" /></div>
-       </div>
-       { loadingMessage != null &&
-         <div className="loading-message"><img src={spinner} alt={loading_string}/><span>{loadingMessage}</span></div>
+      <DetectBrowser>
+        {({ browser }) =>
+          browser && (browser.name === "firefox" || browser.name === "chrome") ? (
+           <div className="Guitarix">
+             <div className="selected_header">
+               <Link to="/" className="back_link" title={select_another_instrument_string}>&laquo;</Link>
+               <div className="selected_header_title"><FormattedMessage id="preview_guitarix_artifacts" /></div>
+             </div>
+             { loadingMessage != null &&
+               <div className="loading-message"><img src={spinner} alt={loading_string}/><span>{loadingMessage}</span></div>
+             }
+             <div className={recordStuffClass}>
+               <h5><FormattedMessage id="recording_title" /></h5>
+               <div>
+                 <img src={record_button} className={recordClass} alt={record_button_string} title={record_button_string} onClick={this.handleToggleRecording}/>
+               </div>
+               {record == null && !isRecording &&
+                 <div className="first_record_msg"><FormattedMessage id="record_please_msg"/></div>
+               }
+               <div>
+                 <ReactMic
+                    record={this.state.isRecording}
+                    className="sound-wave"
+                    onStop={this.onStop}
+                    strokeColor="#000000"
+                    />
+                </div>
+                {record != null && !isRecording &&
+                  <div className="record_player">
+                    <Plyr type="audio" sources={[{ src: record.blobURL, type: 'audio/ogg' }]} className={"react-plyr-user-record-" + currentRequestId} />
+                    {/*<a href={record.blobURL}><img src={download_image} alt={download_string} className="download_button"/></a>*/}
+                  </div>
+                }
+             </div>
+             <div>
+               <div className="select_artifact_div">
+                 <div><FormattedMessage id="select_artifact" /></div>
+                 <select className="select_artifact" onChange={this.handleSelectArtifact}>
+                   {artifacts.map((artifact) => (
+                     <option value={artifact.ma_id} key={artifact.ma_id}>
+                       {artifact.name}
+                     </option>
+                   ))}
+                 </select>
+               </div>
+               <div className="select_artifact_div">
+                 <div><FormattedMessage id="select_preset" /></div>
+                 <select className="select_preset" onChange={this.handleSelectPreset}>
+                   {presets != null && presets.map((preset) => (
+                     <option value={preset} key={preset}>
+                       {preset}
+                     </option>
+                   ))}
+                 </select>
+               </div>
+               <img src={start_processing_button} className={startProcessingClass} alt={start_processing_string} title={start_processing_string} onClick={this.handleStartProcessing}/>
+               <div className="clearfix"></div>
+               {processedFiles.length > 0
+                 && <div>
+                      <h5 className="processed_files_title"><FormattedMessage id="processed_files" /></h5>
+                      <ul className="list_of_recordings">
+                        {processedFiles.map((processed_file, index) => (
+                         <li key={processed_file.file}>
+                           <a href={"https://musical-artifacts.com/artifacts/" + processed_file.artifactId} className="view_artifact" title={view_on_ma_string}  target="_blank">{processed_file.artifactName} - {processed_file.preset}</a>
+                           <div>
+                             <Plyr type="audio" sources={[{ src: processed_file.file, type: 'audio/mp3' }]} className={"react-plyr-processed-" + index} />
+                             <a href={processed_file.file} target="_blank"><img src={download_image} alt={download_string} className="download_button"/></a>
+                           </div>
+                         </li>
+                       ))}
+                      </ul>
+                    </div>
+               }
+             </div>
+             <div className="linkToMa">
+               <FormattedMessage id="artifacts_listed_here" values={{ link: <a href="https://musical-artifacts.com/?formats=gx" target="_blank" rel="noopener noreferrer"><FormattedMessage id="musical_artifacts" /></a> }} />
+             </div>
+           </div>
+         ) : (
+           <h2><FormattedMessage id="guitarix_browser_not_supported" /></h2>
+         )
        }
-       <div className={recordStuffClass}>
-         <h5><FormattedMessage id="recording_title" /></h5>
-         <div>
-           <img src={record_button} className={recordClass} alt={record_button_string} title={record_button_string} onClick={this.handleToggleRecording}/>
-         </div>
-         {record == null && !isRecording &&
-           <div className="first_record_msg"><FormattedMessage id="record_please_msg"/></div>
-         }
-         <div>
-           <ReactMic
-              record={this.state.isRecording}
-              className="sound-wave"
-              onStop={this.onStop}
-              strokeColor="#000000"
-              />
-          </div>
-          {record != null && !isRecording &&
-            <div className="record_player">
-              <Plyr type="audio" sources={[{ src: record.blobURL, type: 'audio/ogg' }]} className={"react-plyr-user-record-" + currentRequestId} />
-              {/*<a href={record.blobURL}><img src={download_image} alt={download_string} className="download_button"/></a>*/}
-            </div>
-          }
-       </div>
-       <div>
-         <div className="select_artifact_div">
-           <div><FormattedMessage id="select_artifact" /></div>
-           <select className="select_artifact" onChange={this.handleSelectArtifact}>
-             {artifacts.map((artifact) => (
-               <option value={artifact.ma_id} key={artifact.ma_id}>
-                 {artifact.name}
-               </option>
-             ))}
-           </select>
-         </div>
-         <div className="select_artifact_div">
-           <div><FormattedMessage id="select_preset" /></div>
-           <select className="select_preset" onChange={this.handleSelectPreset}>
-             {presets != null && presets.map((preset) => (
-               <option value={preset} key={preset}>
-                 {preset}
-               </option>
-             ))}
-           </select>
-         </div>
-         <img src={start_processing_button} className={startProcessingClass} alt={start_processing_string} title={start_processing_string} onClick={this.handleStartProcessing}/>
-         <div className="clearfix"></div>
-         {processedFiles.length > 0
-           && <div>
-                <h5 className="processed_files_title"><FormattedMessage id="processed_files" /></h5>
-                <ul className="list_of_recordings">
-                  {processedFiles.map((processed_file, index) => (
-                   <li key={processed_file.file}>
-                     <a href={"https://musical-artifacts.com/artifacts/" + processed_file.artifactId} className="view_artifact" title={view_on_ma_string}  target="_blank">{processed_file.artifactName} - {processed_file.preset}</a>
-                     <div>
-                       <Plyr type="audio" sources={[{ src: processed_file.file, type: 'audio/mp3' }]} className={"react-plyr-processed-" + index} />
-                       <a href={processed_file.file} target="_blank"><img src={download_image} alt={download_string} className="download_button"/></a>
-                     </div>
-                   </li>
-                 ))}
-                </ul>
-              </div>
-         }
-       </div>
-       <div className="linkToMa">
-         <FormattedMessage id="artifacts_listed_here" values={{ link: <a href="https://musical-artifacts.com/?formats=gx" target="_blank"><FormattedMessage id="musical_artifacts" /></a> }} />
-       </div>
-     </div>
+     </DetectBrowser>
    );
  }
 }
 
-export default injectIntl(Guitar);
+export default injectIntl(Guitarix);
