@@ -27,7 +27,6 @@ class Guitarix extends Component {
       record: null,
       processedFiles: [],
       loadingMessage: null,
-      currentRequestId: null
     };
     this.handleToggleRecording = this.handleToggleRecording.bind(this);
     this.handleSelectArtifact = this.handleSelectArtifact.bind(this);
@@ -85,7 +84,7 @@ class Guitarix extends Component {
   }
 
   handleToggleRecording(){
-    this.setState({ isRecording : !this.state.isRecording });
+    this.setState({ isRecording : !this.state.isRecording, record: null });
   }
 
   handleSelectArtifact(e) {
@@ -119,7 +118,8 @@ class Guitarix extends Component {
     fetch(this.API_URL + "/order", { method, body })
       .then(res => res.json())
       .then(data => {
-        this.setState({ currentRequestId: data.id, loadingMessage: null });
+        this.setState({ loadingMessage: null });
+        // TODO check if return was 200. if mode is wrong, for example, it returns a 400 error with currentrequest=undefined
 
         this.interval = setInterval(() => {
           fetch(this.API_URL + "/order/" + data.id)
@@ -155,7 +155,7 @@ class Guitarix extends Component {
   }
 
   render() {
-    const { presets, artifacts, artifactToTest, presetToTest, isRecording, isProcessing, record, processedFiles, loadingMessage, currentRequestId } = this.state;
+    const { presets, artifacts, artifactToTest, presetToTest, isRecording, isProcessing, record, processedFiles, loadingMessage } = this.state;
     const intl = this.props.intl;
     const record_start_string = intl.formatMessage({
       id: "record_start"
@@ -191,6 +191,7 @@ class Guitarix extends Component {
       'start_processing_button_img',
       {'disabled': presetToTest === null || artifactToTest === null || record === null || isProcessing}
     );
+    console.log(record);
     return (
       <DetectBrowser>
         {({ browser }) =>
@@ -221,7 +222,7 @@ class Guitarix extends Component {
                 </div>
                 {record != null && !isRecording &&
                   <div className="record_player">
-                    <Plyr type="audio" sources={[{ src: record.blobURL, type: 'audio/ogg' }]} className={"react-plyr-user-record-" + currentRequestId} />
+                    <Plyr type="audio" sources={[{ src: record.blobURL, type: 'audio/ogg' }]} className={ "react-plyr-user-record-" + record.stopTime } />
                     {/*<a href={record.blobURL}><img src={download_image} alt={download_string} className="download_button"/></a>*/}
                   </div>
                 }

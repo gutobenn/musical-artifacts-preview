@@ -84,8 +84,8 @@ app.get('/queue', (req, res) => res.status(200).json(queue));
 app.post('/order', upload.single('file'), (req, res, next) => {
   if (!req.body || !req.body.mode) {
     return next({ status: 400, message: 'mode field is required' });
-  } else if (req.body.mode !== "guitar") {
-    return next({ status: 400, message: 'mode field must have one of the following values: guitar' });
+  } else if (req.body.mode !== "guitarix") {
+    return next({ status: 400, message: 'mode field must have one of the following values: guitarix' });
   }
   if (!req.body || !req.body.artifact) {
     return next({ status: 400, message: 'artifact field is required' });
