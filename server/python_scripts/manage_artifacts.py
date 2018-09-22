@@ -96,7 +96,9 @@ def generate_json():
         print("Generating json file...")
         artifacts_on_db = Database().get_all_artifacts_for_json()
         all = [{'ma_id': a[0], 'name': a[1], 'presets': json.loads(a[2])} for a in artifacts_on_db]
-        with open('guitarix.json', 'w') as outfile:
+
+        guitarix_json_path = os.path.dirname(os.path.abspath(__file__)) + '/../guitarix.json'
+        with open(guitarix_json_path, 'w') as outfile:
             json.dump(all, outfile)
         print("Done")
     except:

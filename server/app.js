@@ -5,20 +5,22 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const multer  = require('multer');
 const fs = require('fs-extra');
-const { spawn } = require('child_process');
+var spawn = require('child-process-promise').spawn;
 
 const upload = multer({ dest: 'uploads/' });
 const app = express();
-
-const currentDomain = 'http://localhost:3000'
 
 express.static.mime.define({'application/octet-stream': ['mp3']});
 
 app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cors());
-app.use('/processed_files', express.static('processed_files'));
-app.use('/guitarix.json', express.static('guitarix.json'));
+
+const currentDomain = 'https://preview-api.musical-artifacts.com';
+// Lines below are useful for dev environment. On production we use nginx.
+//const currentDomain = 'http://localhost:3000'
+//app.use('/processed_files', express.static('processed_files');
+//app.use('/guitarix.json', express.static('guitarix.json'));
 
 let orders = {};
 let queue = [];
@@ -37,36 +39,45 @@ function addOrder(mode, file, artifact, preset) {
   return id;
 }
 
-async function processQueue(){
-  while (order_id = queue.shift()) {
+function processQueue(){
+  if (queue.length > 0) {
+    const order_id = queue.shift();
     console.log("Processing " + order_id);
     orders[order_id].status = 'processing';
     delete orders[order_id].position_in_queue;
 
-    let relative_order_dir_path = 'processed_files/' + order_id;
-    // TODO handle errors here. check success. set a timeout? include an 'error' status
-    async function lala(bk_order_id) {
-      const cp = spawn('python3',
+    const relative_order_dir_path = 'processed_files/' + order_id;
+    var promise = spawn('python3',
                   ['./python_scripts/process_audio.py',
-                  orders[bk_order_id].artifact,
-                  orders[bk_order_id].preset,
-                  __dirname + '/uploads/' + orders[bk_order_id].filename,
-                  __dirname + '/processed_files/' + bk_order_id]);
-      cp.stdout.on('data', (data) => {
-        console.log(`child stdout:\n${data}`);
+                  orders[order_id].artifact,
+                  orders[order_id].preset,
+                  __dirname + '/uploads/' + orders[order_id].filename,
+                  __dirname + '/processed_files/' + [order_id]]);
+
+    var childProcess = promise.childProcess;
+    console.log('[spawn] childProcess.pid: ', childProcess.pid);
+
+    childProcess.stdout.on('data', function (data) {
+      console.log('[spawn] stdout: ', data.toString());
+    });
+    childProcess.stderr.on('data', function (data) {
+      console.log('[spawn] stderr: ', data.toString());
+    });
+
+    promise.then(function () {
+        console.log('[spawn] done!');
+        orders[order_id].processed_file = currentDomain + '/' + relative_order_dir_path + '/output.mp3';
+        orders[order_id].status = 'done';
+        processQueue();
+      })
+      .catch(function (err) {
+        console.error('[spawn] ERROR: ', err);
+        orders[order_id].status = 'error';
+        processQueue();
       });
-      cp.stderr.on('data', (data) => {
-        console.error(`child stderr:\n${data}`);
-      });
-      cp.on('exit', console.log.bind(console, 'exited'));
-      cp.on('close', console.log.bind(console, 'closed'));
-      // TODO check exitcode
-      orders[bk_order_id].processed_file = currentDomain + '/' + relative_order_dir_path + '/output.mp3';
-      orders[bk_order_id].status = 'done';
-    }
-    lala(order_id);
+  } else {
+    setTimeout(processQueue, 1000);
   }
-  setTimeout(processQueue, 1000);
 }
 
 function timeOut(ms) {

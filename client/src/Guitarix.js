@@ -15,7 +15,8 @@ import DetectBrowser from 'react-detect-browser';
 class Guitarix extends Component {
   constructor(props) {
     super(props);
-    this.API_URL = "http://localhost:3000"; // TODO define it in a config file
+    this.API_URL = "https://preview-api.musical-artifacts.com/api"; // TODO define it in a config file
+    this.GUITARIX_URL = "https://preview-api.musical-artifacts.com/guitarix.json"; // TODO define it in a config file
     this.state = {
       isLoaded: false,
       artifacts: [],
@@ -40,7 +41,7 @@ class Guitarix extends Component {
     const intl = this.props.intl;
     this.setLoadingMessage(intl.formatMessage({ id: "loading_guitarix_artifacts" }));
 
-    fetch(this.API_URL + "/guitarix.json")
+    fetch(this.GUITARIX_URL)
       .then(res => res.json())
       .then(
         (result) => {
@@ -134,16 +135,12 @@ class Guitarix extends Component {
                  file: data.processed_file,
                  order: data.id
                };
+               this.setState({ isProcessing: false, processedFiles: [processed_file, ...processedFiles], loadingMessage: intl.formatMessage({ id: "done" })});
                setTimeout(function(){
-                 this.setState({ isProcessing: false, processedFiles: [processed_file, ...processedFiles], loadingMessage: intl.formatMessage({ id: "done" })});
-                 setTimeout(function(){
-                   this.setState({ loadingMessage: null });
-                 }
-                 .bind(this),
-                 1000);
+                 this.setState({ loadingMessage: null });
                }
                .bind(this),
-               1000); // TODO FIXME the file takes some time to be available on the server. This timeout is just to guarantee the server is not going to return a 404 when plyr try to load it.
+               1000);
              } else if (data.status === "queue"){
                this.setLoadingMessage(intl.formatMessage({ id: "queue_position", values: { position_in_queue: data.position_in_queue } }));
              } else if (data.status === 'processing') {
