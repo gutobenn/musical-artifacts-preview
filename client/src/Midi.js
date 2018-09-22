@@ -40,7 +40,7 @@ class Midi extends Component {
                   'tenor_sax',
                   'baritone_sax',
                   'flute',
-                  'synth drum'],
+                  'synth_drum'],
       noteRange: {
         first: MidiNumbers.fromNote('c3'),
         last: MidiNumbers.fromNote('f5'),
