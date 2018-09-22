@@ -17,7 +17,7 @@ export default {
     preview_guitarix_artifacts: "Preview Guitarix artifacts",
     processed_files: "Processed recordings",
     processing_record: "Your record is being processed",
-    project_description: "With this tool you can preview the artifacts from musical-artifacts.com directly in the browser, using your musicla instrument.",
+    project_description: "With this tool you can preview the artifacts from musical-artifacts.com directly in the browser, using your musical instrument.",
     queue_position: "Your record is #{position_in_queue} in queue",
     record_start: "Start recording",
     record_stop: "Stop recording",

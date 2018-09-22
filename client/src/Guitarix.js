@@ -142,7 +142,7 @@ class Guitarix extends Component {
                .bind(this),
                1000);
              } else if (data.status === "queue"){
-               this.setLoadingMessage(intl.formatMessage({ id: "queue_position", values: { position_in_queue: data.position_in_queue } }));
+               this.setLoadingMessage(intl.formatMessage({ id: "queue_position"}, { position_in_queue: data.position_in_queue }));
              } else if (data.status === 'processing') {
                this.setLoadingMessage(intl.formatMessage({ id: "processing_record" }));
              }
@@ -188,7 +188,6 @@ class Guitarix extends Component {
       'start_processing_button_img',
       {'disabled': presetToTest === null || artifactToTest === null || record === null || isProcessing}
     );
-    console.log(record);
     return (
       <DetectBrowser>
         {({ browser }) =>
