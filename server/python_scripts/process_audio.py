@@ -6,14 +6,10 @@ import os
 import re
 import sys
 import argparse
-import time
 import nclib
 from database import Database
 
-jack_start_process = None
-opusdec_process = None
 file2jack_process = None
-guitarix_process = None
 jack_capture_process = None
 lame_process = None
 
@@ -30,12 +26,6 @@ def processFile(artifactId, preset, input_file, output_dir):
         if not Database().get_artifact(artifactId):
             raise ValueError("-> Artifact not available...")
 
-        print("-> Starting JACK server...")
-        jack_start_process = subprocess.Popen("jack_control start", shell=True, stdout=subprocess.PIPE)
-        jack_start_process.wait()
-        if jack_start_process.returncode != 0:
-            raise ValueError("Could not start JACK")
-
         print("-> Converting file to WAV...")
         ffmpeg_process = subprocess.Popen("ffmpeg -i '" + input_file + "' -c:v copy '" + input_converted_file + "'", shell=True, stdout=subprocess.PIPE)
         ffmpeg_process.wait()
@@ -46,9 +36,6 @@ def processFile(artifactId, preset, input_file, output_dir):
         file2jack_process = subprocess.Popen("cd jack-file && ./file2jack -at 0 -i '" + input_converted_file + "'", shell=True, stdout=subprocess.PIPE)
         client = jack.Client('AudioProcessing')
 
-        print("-> Starting Guitarix...")
-        guitarix_process = subprocess.Popen("guitarix -N -p 7000", shell=True, stdout=subprocess.PIPE)
-        time.sleep(1) # TODO instead of a fixed sleep, keep checking until guitarix port is ready
         nc = nclib.Netcat(('localhost', 7000), verbose=True)
         jsonrpc_msg = '{"jsonrpc":"2.0","method":"setpreset","params":["ma-' + str(artifactId) + '","' + preset + '"]}\n'
         nc.send(bytes(jsonrpc_msg, 'utf-8'))
@@ -124,24 +111,9 @@ def processFile(artifactId, preset, input_file, output_dir):
             print("-> Stopping jack_capture...")
             jack_capture_process.terminate()
 
-        if guitarix_process is not None:
-            print("-> Stopping guitarix...")
-            #guitarix_process.kill() # doesn't work
-            os.system('pkill guitarix')
-
         if file2jack_process is not None:
             print("-> Stopping File2jack...")
-            #file2jack_process.kill() # doesn't work
-            #os.system('pkill -TERM -P {pid}'.format(pid=file2jack_process.pid)) # doesn't work too
             os.system('pkill file2jack')
-
-        if jack_start_process is not None:
-            print("-> Stopping JACK server...")
-            jack_stop_process = subprocess.Popen("jack_control stop", shell=True, stdout=subprocess.PIPE)
-            jack_stop_process.wait()
-
-            if jack_stop_process.returncode != 0:
-                print("-> ERROR stopping JACK. Please stop it manually")
 
 def main(argv):
     parser = argparse.ArgumentParser()
