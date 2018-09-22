@@ -3,7 +3,6 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import guitar from './images/electric_guitar.svg';
 import midi_keyboard from './images/midi_keyboard.svg';
-import drums from './images/drums.svg';
 import './styles/css/SelectInstrument.css';
 
 class SelectInstrument extends Component {
@@ -15,10 +14,6 @@ class SelectInstrument extends Component {
     const midi_controller_string = intl.formatMessage({
       id: "midi_controller"
     });
-    const drums_string = intl.formatMessage({
-      id: "drums"
-    });
-
     return (
       <div className="SelectInstrument">
         <h4><FormattedMessage id="select_instrument" /></h4>
@@ -35,13 +30,8 @@ class SelectInstrument extends Component {
               <span><FormattedMessage id="midi_controller" /></span>
             </Link>
           </div>
-          {/*<div className="instrument">
-            <Link to="/drums">
-              <img src={drums} id="drums_img" alt={drums_string} /><br />
-              <span><FormattedMessage id="drums" /></span>
-            </Link>
-          </div>*/}
         </div>
+        {/* TODO use Footer component? */}
         <div className="change_language">
           <Link to="/?lang=pt" target="_self">Português</Link> | <Link to="/?lang=en" target="_self">English</Link>
         </div>

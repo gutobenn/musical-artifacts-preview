@@ -1,0 +1,24 @@
+.LoadingMessage {
+  border: 1px solid #eee;
+  border-radius: 5px;
+  position: absolute;
+  margin: 0 auto;
+  text-align: center;
+  top: 0;
+  right: 0;
+  box-shadow: 3px 3px 5px #f8f8f8;
+  padding: 2px 15px 0 2px;
+  background: #fff;
+  z-index: 2;
+
+  img {
+    height: 40px;
+    margin: 0;
+  }
+
+  span {
+    margin-left: 2px;
+    padding-top: 10px;
+    float: right;
+  }
+}

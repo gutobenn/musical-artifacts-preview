@@ -1,28 +1,6 @@
 .Guitarix {
   position: relative;
 
-  .selected_header {
-    margin-bottom: 10px;
-    border-bottom: 1px solid #f8f8f8;
-    height: 30px;
-
-    .selected_header_title {
-      text-align: center;
-      width: 100%;
-      display: block;
-      font-size: 0.9rem;
-      letter-spacing: 0.0rem;
-      font-weight: 700;
-    }
-
-    .back_link {
-      font-size: 1.8rem;
-      margin-right: 20px;
-      float: left;
-      line-height: 1rem;
-    }
-  }
-
   .record_player {
     display: inline-block;
     vertical-align: 3px;
@@ -88,79 +66,8 @@
     }
   }
 
-  .select_artifact_div {
-    width: calc(50% - 52px);
-    float: left;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #eee;
-    margin-right: 10px;
-
-    div {
-      margin-bottom: 5px;
-    }
-
-    select {
-      width: 100%;
-      background: #f8f8f8;
-      border: 1px solid #eee;
-      padding: 5px;
-      border-radius: 5px;
-      font-family: 'Lato';
-      appearance: none;
-      -moz-appearance: none;
-      -webkit-appearance: none;
-      float: left;
-
-      &:hover {
-        background: #eee;
-      }
-    }
-
-    button {
-      background: #333;
-      color: white;
-      font-weight: 700;
-      border: 1px solid black;
-      padding: 3px 10px;
-      border-radius: 0px 5px 5px 0px;
-      font-size: 17px;
-      border-left: 0;
-      cursor: pointer;
-
-      &:hover {
-        background: #000;
-      }
-    }
-  }
-
   .selected_instrument_img {
     height: 22px;
-  }
-
-  .loading-message {
-    border: 1px solid #eee;
-    border-radius: 5px;
-    position: absolute;
-    margin: 0 auto;
-    text-align: center;
-    top: 0;
-    right: 0;
-    box-shadow: 3px 3px 5px #f8f8f8;
-    padding: 2px 15px 0 2px;
-    background: #fff;
-    z-index: 2;
-
-    img {
-      height: 40px;
-      margin: 0;
-    }
-
-    span {
-      margin-left: 2px;
-      padding-top: 10px;
-      float: right;
-    }
   }
 
   .processed_files_title {
@@ -223,12 +130,6 @@
       vertical-align: 4px;
       opacity: 0.75;
     }
-  }
-
-  .linkToMa {
-    font-size: 0.85rem;
-    position: absolute;
-    bottom: 0;
   }
 }
 

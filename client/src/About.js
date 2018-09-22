@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { Header } from './common';
 import './styles/css/About.css';
 
 class About extends Component {
   render() {
     return (
       <div>
-        <h2><FormattedMessage id="about" /></h2>
+        <Header titleId="about" />
         <FormattedMessage id="project_description" /><br /><br />
         <FormattedMessage id="link_to_github" values={{ link: <a href="https://github.com/gutobenn/musical-artifacts-preview" target="_blank" rel="noopener noreferrer">GitHub</a> }} />
         <br /><br />

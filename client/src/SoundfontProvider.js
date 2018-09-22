@@ -36,6 +36,21 @@ class SoundfontProvider extends React.Component {
         return `${this.props.hostname}/${soundfont}/${name}-${format}.js`;
       },
     }).then(instrument => {
+      if (navigator.requestMIDIAccess !== undefined) {
+        window.navigator.requestMIDIAccess().then(
+          (midiAccess) => {
+            midiAccess.inputs.forEach(function (midiInput) {
+              instrument.listenToMidi(midiInput)
+            })
+            console.log("TODO you can use your midi device to test it");
+          },
+          (e) => {
+            console.log("TODO something went wrong while requesting the MIDI devices");
+          }
+        );
+      } else {
+        console.log("TODO No access to MIDI devices: browser does not support WebMIDI API, please use the WebMIDIAPIShim together with the Jazz plugin");
+      }
       this.setState({
         instrument,
       });

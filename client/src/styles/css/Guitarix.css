@@ -1,25 +1,6 @@
 .Guitarix {
   position: relative;
 }
-.Guitarix .selected_header {
-  margin-bottom: 10px;
-  border-bottom: 1px solid #f8f8f8;
-  height: 30px;
-}
-.Guitarix .selected_header .selected_header_title {
-  text-align: center;
-  width: 100%;
-  display: block;
-  font-size: 0.9rem;
-  letter-spacing: 0rem;
-  font-weight: 700;
-}
-.Guitarix .selected_header .back_link {
-  font-size: 1.8rem;
-  margin-right: 20px;
-  float: left;
-  line-height: 1rem;
-}
 .Guitarix .record_player {
   display: inline-block;
   vertical-align: 3px;
@@ -69,70 +50,8 @@
   opacity: 0.8;
   cursor: not-allowed;
 }
-.Guitarix .select_artifact_div {
-  width: calc(50% - 52px);
-  float: left;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #eee;
-  margin-right: 10px;
-}
-.Guitarix .select_artifact_div div {
-  margin-bottom: 5px;
-}
-.Guitarix .select_artifact_div select {
-  width: 100%;
-  background: #f8f8f8;
-  border: 1px solid #eee;
-  padding: 5px;
-  border-radius: 5px;
-  font-family: "Lato";
-  appearance: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  float: left;
-}
-.Guitarix .select_artifact_div select:hover {
-  background: #eee;
-}
-.Guitarix .select_artifact_div button {
-  background: #333;
-  color: white;
-  font-weight: 700;
-  border: 1px solid black;
-  padding: 3px 10px;
-  border-radius: 0px 5px 5px 0px;
-  font-size: 17px;
-  border-left: 0;
-  cursor: pointer;
-}
-.Guitarix .select_artifact_div button:hover {
-  background: #000;
-}
 .Guitarix .selected_instrument_img {
   height: 22px;
-}
-.Guitarix .loading-message {
-  border: 1px solid #eee;
-  border-radius: 5px;
-  position: absolute;
-  margin: 0 auto;
-  text-align: center;
-  top: 0;
-  right: 0;
-  box-shadow: 3px 3px 5px #f8f8f8;
-  padding: 2px 15px 0 2px;
-  background: #fff;
-  z-index: 2;
-}
-.Guitarix .loading-message img {
-  height: 40px;
-  margin: 0;
-}
-.Guitarix .loading-message span {
-  margin-left: 2px;
-  padding-top: 10px;
-  float: right;
 }
 .Guitarix .processed_files_title {
   margin-top: 35px;
@@ -184,11 +103,6 @@
   margin-left: 10px;
   vertical-align: 4px;
   opacity: 0.75;
-}
-.Guitarix .linkToMa {
-  font-size: 0.85rem;
-  position: absolute;
-  bottom: 0;
 }
 
 /* Custom Plyr style */

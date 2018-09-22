@@ -3,9 +3,8 @@ import { ReactMic } from 'react-mic';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import record_button from './images/record-button-red.svg';
 import start_processing_button from './images/start_processing.svg';
-import spinner from './images/spinner.svg';
 import download_image from './images/download.svg';
-import { Link } from 'react-router-dom';
+import { Footer, Header, LoadingMessage, Select, SelectArtifact } from './common';
 import './styles/css/Guitarix.css';
 import classNames from 'classnames';
 import Plyr from 'react-plyr';
@@ -15,10 +14,10 @@ import DetectBrowser from 'react-detect-browser';
 class Guitarix extends Component {
   constructor(props) {
     super(props);
-    this.API_URL = "https://preview-api.musical-artifacts.com/api"; // TODO define it in a config file
-    this.GUITARIX_URL = "https://preview-api.musical-artifacts.com/guitarix.json"; // TODO define it in a config file
+    // TODO define urls in a config file
+    this.API_URL = "https://preview-api.musical-artifacts.com/api";
+    this.GUITARIX_URL = "https://preview-api.musical-artifacts.com/guitarix.json";
     this.state = {
-      isLoaded: false,
       artifacts: [],
       artifactToTest: null,
       presets: [],
@@ -34,12 +33,11 @@ class Guitarix extends Component {
     this.handleSelectPreset = this.handleSelectPreset.bind(this);
     this.handleStartProcessing = this.handleStartProcessing.bind(this);
     this.onStop = this.onStop.bind(this);
-    this.setLoadingMessage = this.setLoadingMessage.bind(this);
   }
 
   componentDidMount() {
     const intl = this.props.intl;
-    this.setLoadingMessage(intl.formatMessage({ id: "loading_guitarix_artifacts" }));
+    this.setState({ loadingMessage: intl.formatMessage({ id: "loading_guitarix_artifacts" })});
 
     fetch(this.GUITARIX_URL)
       .then(res => res.json())
@@ -47,7 +45,6 @@ class Guitarix extends Component {
         (result) => {
           const ordered_result = sortBy(result, [function(o) { return o.name.toUpperCase(); }]);
           this.setState({
-            isLoaded: true,
             artifacts: ordered_result,
             artifactToTest: ordered_result[0].ma_id,
             presets: ordered_result[0].presets,
@@ -55,14 +52,9 @@ class Guitarix extends Component {
             loadingMessage: null
           });
         },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => { // TODO handle errors
+        (error) => {
           this.setState({
-            isLoaded: true,
             loadingMessage: null,
-            error
           });
         }
       );
@@ -74,10 +66,6 @@ class Guitarix extends Component {
 
   stopRecording() {
     this.setState({ isRecording: false });
-  }
-
-  setLoadingMessage(loadingMessage) {
-    this.setState({ loadingMessage });
   }
 
   onStop(recordedBlob) {
@@ -107,8 +95,7 @@ class Guitarix extends Component {
       return;
     }
 
-    this.setState({ isProcessing: true });
-    this.setLoadingMessage(intl.formatMessage({ id: "uploading_recording" }));
+    this.setState({ isProcessing: true, loadingMessage: intl.formatMessage({ id: "uploading_recording" })});
 
     const method = "POST";
     var body = new FormData();
@@ -120,13 +107,22 @@ class Guitarix extends Component {
       .then(res => res.json())
       .then(data => {
         this.setState({ loadingMessage: null });
-        // TODO check if return was 200. if mode is wrong, for example, it returns a 400 error with currentrequest=undefined
 
         this.interval = setInterval(() => {
           fetch(this.API_URL + "/order/" + data.id)
            .then(res => res.json())
            .then(data => {
-             if (data.status === "done") {
+             console.log(data);
+             if (data.status === "error") {
+               clearInterval(this.interval);
+               this.setState({ isProcessing: false, loadingMessage: intl.formatMessage({ id: "error" })});
+               setTimeout(function(){
+                 this.setState({ loadingMessage: null });
+               }
+               .bind(this),
+               3000);
+             }
+             else if (data.status === "done") {
                clearInterval(this.interval);
                const processed_file = {
                  artifactId: data.artifact,
@@ -142,12 +138,24 @@ class Guitarix extends Component {
                .bind(this),
                1000);
              } else if (data.status === "queue"){
-               this.setLoadingMessage(intl.formatMessage({ id: "queue_position"}, { position_in_queue: data.position_in_queue }));
+               this.setState({ loadingMessage: intl.formatMessage({ id: "queue_position"}, { position_in_queue: data.position_in_queue })});
              } else if (data.status === 'processing') {
-               this.setLoadingMessage(intl.formatMessage({ id: "processing_record" }));
+               this.setState({ loadingMessage: intl.formatMessage({ id: "processing_record" })});
              }
+           })
+           .catch( error => {
+             clearInterval(this.interval);
            });
          }, 1000);
+     },
+     (error) => {
+       clearInterval(this.interval);
+       this.setState({ isProcessing: false, loadingMessage: intl.formatMessage({ id: "error" })});
+       setTimeout(function(){
+         this.setState({ loadingMessage: null });
+       }
+       .bind(this),
+       3000);
      });
   }
 
@@ -160,20 +168,8 @@ class Guitarix extends Component {
     const record_stop_string = intl.formatMessage({
       id: "record_stop"
     });
-    const loading_string = intl.formatMessage({
-      id: "loading"
-    });
-    const download_string = intl.formatMessage({
-      id: "download"
-    });
     const start_processing_string = intl.formatMessage({
       id: "start_processing"
-    });
-    const select_another_instrument_string = intl.formatMessage({
-      id: "select_another_instrument"
-    });
-    const view_on_ma_string = intl.formatMessage({
-      id: "view_on_ma"
     });
     var record_button_string = isRecording ? record_stop_string : record_start_string;
     var recordStuffClass = classNames(
@@ -193,13 +189,8 @@ class Guitarix extends Component {
         {({ browser }) =>
           browser && (browser.name === "firefox" || browser.name === "chrome") ? (
            <div className="Guitarix">
-             <div className="selected_header">
-               <Link to="/" className="back_link" title={select_another_instrument_string}>&laquo;</Link>
-               <div className="selected_header_title"><FormattedMessage id="preview_guitarix_artifacts" /></div>
-             </div>
-             { loadingMessage != null &&
-               <div className="loading-message"><img src={spinner} alt={loading_string}/><span>{loadingMessage}</span></div>
-             }
+             <Header titleId="header_guitarix_artifacts" />
+             <LoadingMessage message={loadingMessage} />
              <div className={recordStuffClass}>
                <h5><FormattedMessage id="recording_title" /></h5>
                <div>
@@ -224,48 +215,13 @@ class Guitarix extends Component {
                 }
              </div>
              <div>
-               <div className="select_artifact_div">
-                 <div><FormattedMessage id="select_artifact" /></div>
-                 <select className="select_artifact" onChange={this.handleSelectArtifact}>
-                   {artifacts.map((artifact) => (
-                     <option value={artifact.ma_id} key={artifact.ma_id}>
-                       {artifact.name}
-                     </option>
-                   ))}
-                 </select>
-               </div>
-               <div className="select_artifact_div">
-                 <div><FormattedMessage id="select_preset" /></div>
-                 <select className="select_preset" onChange={this.handleSelectPreset}>
-                   {presets != null && presets.map((preset) => (
-                     <option value={preset} key={preset}>
-                       {preset}
-                     </option>
-                   ))}
-                 </select>
-               </div>
+               <SelectArtifact onChange={this.handleSelectArtifact.bind(this)} artifacts={artifacts} />
+               <Select nameId="select_preset" onChange={this.handleSelectPreset.bind(this)} options={presets}/>
                <img src={start_processing_button} className={startProcessingClass} alt={start_processing_string} title={start_processing_string} onClick={this.handleStartProcessing}/>
                <div className="clearfix"></div>
-               {processedFiles.length > 0
-                 && <div>
-                      <h5 className="processed_files_title"><FormattedMessage id="processed_files" /></h5>
-                      <ul className="list_of_recordings">
-                        {processedFiles.map((processed_file, index) => (
-                         <li key={processed_file.file}>
-                           <a href={"https://musical-artifacts.com/artifacts/" + processed_file.artifactId} className="view_artifact" title={view_on_ma_string}  target="_blank">{processed_file.artifactName} - {processed_file.preset}</a>
-                           <div>
-                             <Plyr type="audio" sources={[{ src: processed_file.file, type: 'audio/mp3' }]} className={"react-plyr-processed-" + index} />
-                             <a href={processed_file.file} target="_blank"><img src={download_image} alt={download_string} className="download_button"/></a>
-                           </div>
-                         </li>
-                       ))}
-                      </ul>
-                    </div>
-               }
+               <ProcessedFilesList files={processedFiles} intl={intl}/>
              </div>
-             <div className="linkToMa">
-               <FormattedMessage id="artifacts_listed_here" values={{ link: <a href="https://musical-artifacts.com/?formats=gx" target="_blank" rel="noopener noreferrer"><FormattedMessage id="musical_artifacts" /></a> }} />
-             </div>
+             <Footer artifactFileFormat="gx"/>
            </div>
          ) : (
            <h2><FormattedMessage id="guitarix_browser_not_supported" /></h2>
@@ -274,6 +230,35 @@ class Guitarix extends Component {
      </DetectBrowser>
    );
  }
+}
+
+class ProcessedFilesList extends React.Component {
+  render (){
+    const { intl, files } = this.props;
+    const download_string = intl.formatMessage({
+      id: "download"
+    });
+    const view_on_ma_string = intl.formatMessage({
+      id: "view_on_ma"
+    });
+    return (
+      files.length > 0
+      && <div>
+           <h5 className="processed_files_title"><FormattedMessage id="processed_files" /></h5>
+           <ul className="list_of_recordings">
+             {files.map((processed_file, index) => (
+              <li key={processed_file.file}>
+                <a href={"https://musical-artifacts.com/artifacts/" + processed_file.artifactId} className="view_artifact" title={view_on_ma_string}  target="_blank">{processed_file.artifactName} - {processed_file.preset}</a>
+                <div>
+                  <Plyr type="audio" sources={[{ src: processed_file.file, type: 'audio/mp3' }]} className={"react-plyr-processed-" + index} />
+                  <a href={processed_file.file} target="_blank"><img src={download_image} alt={download_string} className="download_button"/></a>
+                </div>
+              </li>
+            ))}
+           </ul>
+         </div>
+    );
+  }
 }
 
 export default injectIntl(Guitarix);

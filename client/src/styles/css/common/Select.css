@@ -1,0 +1,42 @@
+.Select {
+  width: calc(50% - 52px);
+  float: left;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #eee;
+  margin-right: 10px;
+}
+.Select div {
+  margin-bottom: 5px;
+}
+.Select select {
+  width: 100%;
+  background: #f8f8f8;
+  border: 1px solid #eee;
+  padding: 5px;
+  border-radius: 5px;
+  font-family: "Lato";
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  float: left;
+}
+.Select select:hover {
+  background: #eee;
+}
+.Select button {
+  background: #333;
+  color: white;
+  font-weight: 700;
+  border: 1px solid black;
+  padding: 3px 10px;
+  border-radius: 0px 5px 5px 0px;
+  font-size: 17px;
+  border-left: 0;
+  cursor: pointer;
+}
+.Select button:hover {
+  background: #000;
+}
+
+/*# sourceMappingURL=Select.css.map */
