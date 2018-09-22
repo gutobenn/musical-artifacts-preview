@@ -35,12 +35,12 @@ class SelectInstrument extends Component {
               <span><FormattedMessage id="midi_controller" /></span>
             </Link>
           </div>
-          <div className="instrument">
+          {/*<div className="instrument">
             <Link to="/drums">
               <img src={drums} id="drums_img" alt={drums_string} /><br />
               <span><FormattedMessage id="drums" /></span>
             </Link>
-          </div>
+          </div>*/}
         </div>
         <div className="change_language">
           <Link to="/?lang=pt" target="_self">Português</Link> | <Link to="/?lang=en" target="_self">English</Link>

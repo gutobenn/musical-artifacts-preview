@@ -8,7 +8,7 @@ import Midi from './Midi';
 import Drums from './Drums';
 import About from './About';
 import NoMatch from './NoMatch';
-import registerServiceWorker from './registerServiceWorker';
+//import registerServiceWorker from './registerServiceWorker';
 import en from 'react-intl/locale-data/en';
 import pt from 'react-intl/locale-data/pt';
 import { flattenMessages } from './utils';
@@ -36,4 +36,4 @@ ReactDOM.render(
     </ BrowserRouter>
   </IntlProvider>
   , document.getElementById('internal'));
-registerServiceWorker();
+//registerServiceWorker();
