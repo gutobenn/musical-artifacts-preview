@@ -22,7 +22,7 @@ const keyboardShortcuts = KeyboardShortcuts.create({
 class Midi extends Component {
   constructor(props) {
     super(props);
-    this.GUITARIX_URL = "https://preview-api.musical-artifacts.com/guitarix.json"; // TODO define it in a config file // TODO change
+    this.GUITARIX_URL = "https://preview-api.musical-artifacts.com/soundfonts.json"; // TODO define it in a config file // TODO change
     this.state = {
       artifacts: [],
       artifactToTest: null,

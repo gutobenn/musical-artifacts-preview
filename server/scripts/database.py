@@ -9,13 +9,13 @@ import datetime
 class Database:
     database_file = os.path.dirname(os.path.abspath(__file__)) + '/database.db'
 
-    def get_all_artifacts(self):
+    def get_all_artifacts(self, filetype):
         try:
             conn = sqlite3.connect(self.database_file)
             cursor = conn.cursor()
             cursor.execute("""
-            SELECT * FROM artifacts
-            """)
+            SELECT * FROM artifacts WHERE filetype=?
+            """, (filetype,))
 
             results = cursor.fetchall()
             conn.close()
@@ -25,13 +25,19 @@ class Database:
             print("Unexpected error on get_all_artifacts:", sys.exc_info()[0])
             raise
 
-    def get_all_artifacts_for_json(self):
+    def get_all_artifacts_for_json(self, filetype):
         try:
             conn = sqlite3.connect(self.database_file)
             cursor = conn.cursor()
-            cursor.execute("""
-            SELECT ma_id, name, presets FROM artifacts
-            """)
+
+            if filetype == "gx":
+                cursor.execute("""
+                SELECT ma_id, name, presets FROM artifacts WHERE filetype = 'gx'
+                """)
+            else:
+                cursor.execute("""
+                SELECT ma_id, name FROM artifacts WHERE filetype = 'sf2'
+                """)
 
             results = cursor.fetchall()
             conn.close()
@@ -58,7 +64,7 @@ class Database:
             print("Unexpected error on get_artifact:", sys.exc_info()[0])
             raise
 
-    def upsert_artifact(self, id, name, file_hash, presets):
+    def upsert_artifact(self, id, name, file_hash, presets, filetype):
         try:
             conn = sqlite3.connect(self.database_file)
             cursor = conn.cursor()
@@ -67,15 +73,15 @@ class Database:
                 print("Updating...")
                 cursor.execute("""
                 UPDATE artifacts
-                SET name = ?, file_hash = ?, presets = ?, updated_at = ?
+                SET name = ?, file_hash = ?, presets = ?, filetype = ?, updated_at = ?
                 WHERE ma_id = ?
-                """, (name, file_hash, presets, datetime.datetime.now(), id))
+                """, (name, file_hash, presets, filetype, datetime.datetime.now(), id))
             else:
                 print("Inserting...")
                 cursor.execute("""
-                INSERT INTO artifacts (ma_id, name, file_hash, presets, updated_at)
-                VALUES (?, ?, ?, ?, ?)
-                """, (id, name, file_hash, presets, datetime.datetime.now()))
+                INSERT INTO artifacts (ma_id, name, file_hash, presets, filetype, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """, (id, name, file_hash, presets, filetype, datetime.datetime.now()))
 
             conn.commit()
             conn.close()
@@ -113,6 +119,7 @@ class Database:
                     name TEXT,
                     file_hash TEXT,
                     presets TEXT,
+                    filetype TEXT,
                     updated_at DATE NOT NULL
             );
             """)

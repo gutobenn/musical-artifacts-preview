@@ -21,7 +21,6 @@
 require 'base64'
 require 'fileutils'
 require 'midilib'
-require 'zlib'
 include FileUtils
 
 if ARGV.length < 2 then
@@ -102,13 +101,6 @@ MIDI_C0 = 12
 VELOCITY = 85
 DURATION = Integer(3000)
 TEMP_FILE = "#{BUILD_DIR}/temp.midi"
-
-def deflate(string, level)
-  z = Zlib::Deflate.new(level)
-  dst = z.deflate(string, Zlib::FINISH)
-  z.close
-  dst
-end
 
 def note_to_int(note, octave)
   value = NOTES[note]
@@ -209,8 +201,6 @@ def generate_audio(program)
   close_js_file(mp3_js_file)
 
   mp3_js_file = File.read("#{BUILD_DIR}/#{instrument_key}-mp3.js")
-  mjsz = File.open("#{BUILD_DIR}/#{instrument_key}-mp3.js.gz", "w")
-  mjsz.write(deflate(mp3_js_file, 9));
 
 end
 
