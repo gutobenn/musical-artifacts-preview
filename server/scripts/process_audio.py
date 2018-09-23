@@ -93,6 +93,7 @@ def processFile(artifactId, preset, input_file, output_dir):
             if time_elapsed > audio_duration:
                 print("-> Stop transport")
                 client.transport_stop()
+                client.transport_frame = 0
                 break
 
         client.set_freewheel(False)
