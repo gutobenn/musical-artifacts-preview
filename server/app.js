@@ -48,7 +48,7 @@ function processQueue(){
 
     const relative_order_dir_path = 'processed_files/' + order_id;
     var promise = spawn('python3',
-                  ['./python_scripts/process_audio.py',
+                  ['./scripts/process_audio.py',
                   orders[order_id].artifact,
                   orders[order_id].preset,
                   __dirname + '/uploads/' + orders[order_id].filename,
