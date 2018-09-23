@@ -3,5 +3,7 @@ uploads/*
 !uploads/.gitkeep
 processed_files/*
 !processed_files/.gitkeep
+soundfonts/*
+!soundfonts/.gitkeep
 scripts/__pycache__
 scripts/database.db
