@@ -7,3 +7,5 @@ soundfonts/*
 !soundfonts/.gitkeep
 scripts/__pycache__
 scripts/database.db
+guitarix.json
+soundfonts.json

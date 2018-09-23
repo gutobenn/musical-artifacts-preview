@@ -49,7 +49,6 @@ def download_soundfont_artifact(id, loadedArtifact=None):
         urllib.request.urlretrieve(artifact["file"], filename)
 
         print('Generating soundfonts...')
-        #print("ruby '" + os.path.dirname(os.path.abspath(__file__)) + "/soundfont_builder.rb' '" + filename + "' " + str(id))
         soundfont_generator_process = subprocess.Popen("ruby '" + os.path.dirname(os.path.abspath(__file__)) + "/soundfont_builder.rb' '" + filename + "' " + str(id), shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=0)
         stdout = soundfont_generator_process.communicate()[0]
         soundfont_generator_process.wait()
@@ -126,7 +125,9 @@ def update_soundfonts_artifacts():
         list_updated = []
 
         print("Checking artifacts...")
-        for artifact in artifacts:
+        for i, artifact in enumerate(artifacts):
+            if i == 3:
+                break
             artifact_on_db = Database().get_artifact(artifact["id"])
             # TODO optimization: get all artifacts in only one sql query in the beginning
             if artifact_on_db:

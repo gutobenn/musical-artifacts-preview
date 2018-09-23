@@ -19,7 +19,8 @@ class SoundfontProvider extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.instrumentName !== this.props.instrumentName) {
+    if (prevProps.instrumentName !== this.props.instrumentName
+        || prevProps.soundfont !== this.props.soundfont) {
       this.loadInstrument(this.props.instrumentName);
     }
   }

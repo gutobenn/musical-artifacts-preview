@@ -10,8 +10,8 @@ import "./styles/css/Midi.css";
 
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-const soundfontHostname = 'https://d1pzp51pvbm36p.cloudfront.net';
-//const soundfontHostname = 'http://localhost:8000';
+//const soundfontHostname = 'https://d1pzp51pvbm36p.cloudfront.net';
+const soundfontHostname = 'https://preview-api.musical-artifacts.com/soundfonts';
 
 const keyboardShortcuts = KeyboardShortcuts.create({
   firstNote: MidiNumbers.fromNote('c3'),
@@ -22,7 +22,7 @@ const keyboardShortcuts = KeyboardShortcuts.create({
 class Midi extends Component {
   constructor(props) {
     super(props);
-    this.GUITARIX_URL = "https://preview-api.musical-artifacts.com/soundfonts.json"; // TODO define it in a config file // TODO change
+    this.SOUNDFONTS_JSON_URL = "https://preview-api.musical-artifacts.com/soundfonts.json"; // TODO define it in a config file // TODO change
     this.state = {
       artifacts: [],
       artifactToTest: null,
@@ -47,15 +47,16 @@ class Midi extends Component {
         first: MidiNumbers.fromNote('c3'),
         last: MidiNumbers.fromNote('c5'),
       },
-      loadingMessage: null
+      loadingMessage: null,
+      isLoaded: false 
     };
   }
 
   componentDidMount() {
     const intl = this.props.intl;
-    this.setState({ loadingMessage: intl.formatMessage({ id: "loading_guitarix_artifacts" })});
+    this.setState({ loadingMessage: intl.formatMessage({ id: "loading_soundfont_artifacts" })});
 
-    fetch(this.GUITARIX_URL)
+    fetch(this.SOUNDFONTS_JSON_URL)
       .then(res => res.json())
       .then(
         (result) => {
@@ -64,6 +65,7 @@ class Midi extends Component {
             artifacts: ordered_result,
             artifactToTest: ordered_result[0].ma_id,
             loadingMessage: null,
+            isLoaded: true		  
           });
         },
         (error) => {
@@ -75,10 +77,7 @@ class Midi extends Component {
   }
 
   handleSelectArtifact(e) {
-    const { artifacts } = this.state;
-    const artifactId = e.target.value;
-    const artifact_presets = artifacts.find(a => a.ma_id.toString() === artifactId).presets;
-    this.setState({ artifactToTest: artifactId, presets: artifacts.find(a => a.ma_id.toString() === artifactId).presets, presetToTest: artifact_presets[0] });
+    this.setState({ artifactToTest: e.target.value });
   }
 
   handleChangeNumberOfKeys(e) {
@@ -102,7 +101,7 @@ class Midi extends Component {
   }
 
   render() {
-    const { artifacts, noteRange, instrument, instruments, loadingMessage } = this.state;
+    const { artifacts, artifactToTest, isLoaded, noteRange, instrument, instruments, loadingMessage } = this.state;
     return (
       <div className="Midi">
         <Header titleId="header_midi" />
@@ -113,7 +112,8 @@ class Midi extends Component {
           <Select nameId="select_number_keys" onChange={this.handleChangeNumberOfKeys.bind(this)} options={['25', '49', '88']}/>
         </div>
         <div class="clearfix"></div>
-        <ResponsivePiano noteRange={noteRange} instrument={instrument} soundfont="603"/>
+        { isLoaded && 
+          <ResponsivePiano noteRange={noteRange} instrument={instrument} soundfont={artifactToTest}/>}
         <Footer artifactFileFormat="sf2"/>
       </div>
     );
@@ -126,7 +126,7 @@ function ResponsivePiano(props) {
         {({ containerWidth, containerHeight }) => (
           <SoundfontProvider
             instrumentName={props.instrument}
-            /*soundfont={props.soundfont}*/
+            soundfont={props.soundfont}
             audioContext={audioContext}
             hostname={soundfontHostname}
             render={({ isLoading, playNote, stopNote }) => (
