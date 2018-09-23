@@ -1,6 +1,13 @@
 .Guitarix {
   position: relative;
 }
+.Guitarix .Select {
+  width: calc(50% - 52px);
+  margin-right: 10px;
+}
+.Guitarix .Select:last-of-type {
+  margin-right: 0;
+}
 .Guitarix .record_player {
   display: inline-block;
   vertical-align: 3px;

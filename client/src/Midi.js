@@ -11,10 +11,11 @@ import "./styles/css/Midi.css";
 // webkitAudioContext fallback needed to support Safari
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const soundfontHostname = 'https://d1pzp51pvbm36p.cloudfront.net';
+//const soundfontHostname = 'http://localhost:8000';
 
 const keyboardShortcuts = KeyboardShortcuts.create({
   firstNote: MidiNumbers.fromNote('c3'),
-  lastNote: MidiNumbers.fromNote('f5'),
+  lastNote: MidiNumbers.fromNote('c8'),
   keyboardConfig: KeyboardShortcuts.HOME_ROW,
 })
 
@@ -41,9 +42,10 @@ class Midi extends Component {
                   'baritone_sax',
                   'flute',
                   'synth_drum'],
+      numberOfKeys: '25',
       noteRange: {
         first: MidiNumbers.fromNote('c3'),
-        last: MidiNumbers.fromNote('f5'),
+        last: MidiNumbers.fromNote('c5'),
       },
       loadingMessage: null
     };
@@ -79,12 +81,20 @@ class Midi extends Component {
     this.setState({ artifactToTest: artifactId, presets: artifacts.find(a => a.ma_id.toString() === artifactId).presets, presetToTest: artifact_presets[0] });
   }
 
-  handleChangeNoteRangeFirst(e) {
-    this.setState({ noteRange: { ...this.state.noteRange, first: MidiNumbers.fromNote(e.target.value) } });
-  }
-
-  handleChangeNoteRangeLast(e) {
-    this.setState({ noteRange: { ...this.state.noteRange, last: MidiNumbers.fromNote(e.target.value) } });
+  handleChangeNumberOfKeys(e) {
+    let noteRange;
+    switch(e.target.value) {
+      case "88":
+        noteRange = { first: MidiNumbers.fromNote('a0'), last: MidiNumbers.fromNote('c8') };
+        break;
+      case "49":
+        noteRange = { first: MidiNumbers.fromNote('c2'), last: MidiNumbers.fromNote('c6') };
+        break;
+      default:
+        noteRange = { first: MidiNumbers.fromNote('c3'), last: MidiNumbers.fromNote('c5') };
+        break;
+    }
+    this.setState({ noteRange, numberOfKeys: e.target.value });
   }
 
   handleSelectInstrument(e) {
@@ -97,11 +107,13 @@ class Midi extends Component {
       <div className="Midi">
         <Header titleId="header_midi" />
         <LoadingMessage message={loadingMessage} />
-        <SelectArtifact onChange={this.handleSelectArtifact.bind(this)} artifacts={artifacts} />
-        <Select nameId="select_midi_instrument" onChange={this.handleSelectInstrument.bind(this)}  options={instruments}/>
-        <Select nameId="select_note_range_first" onChange={this.handleChangeNoteRangeFirst.bind(this)} options={['c1', 'c2']}/>
-        <Select nameId="select_note_range_last" onChange={this.handleChangeNoteRangeLast.bind(this)} options={['f4', 'f5']}/>
-        <ResponsivePiano noteRange={noteRange} instrument={instrument}/>
+        <div>
+          <SelectArtifact onChange={this.handleSelectArtifact.bind(this)} artifacts={artifacts} />
+          <Select nameId="select_midi_instrument" onChange={this.handleSelectInstrument.bind(this)}  options={instruments}/>
+          <Select nameId="select_number_keys" onChange={this.handleChangeNumberOfKeys.bind(this)} options={['25', '49', '88']}/>
+        </div>
+        <div class="clearfix"></div>
+        <ResponsivePiano noteRange={noteRange} instrument={instrument} soundfont="603"/>
         <Footer artifactFileFormat="sf2"/>
       </div>
     );
@@ -114,6 +126,7 @@ function ResponsivePiano(props) {
         {({ containerWidth, containerHeight }) => (
           <SoundfontProvider
             instrumentName={props.instrument}
+            /*soundfont={props.soundfont}*/
             audioContext={audioContext}
             hostname={soundfontHostname}
             render={({ isLoading, playNote, stopNote }) => (

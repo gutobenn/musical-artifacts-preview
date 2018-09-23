@@ -1,10 +1,8 @@
 .Select {
-  width: calc(50% - 52px);
   float: left;
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #eee;
-  margin-right: 10px;
 }
 .Select div {
   margin-bottom: 5px;

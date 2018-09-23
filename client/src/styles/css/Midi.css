@@ -1,5 +1,15 @@
 .Midi {
   position: relative;
 }
+.Midi .ReactPiano__Keyboard {
+  margin-top: 40px;
+}
+.Midi .Select {
+  width: calc(33% - 28px);
+  margin-right: 10px;
+}
+.Midi .Select:last-of-type {
+  margin-right: 0;
+}
 
 /*# sourceMappingURL=Midi.css.map */
