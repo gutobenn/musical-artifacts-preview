@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 #
+# This is a custom version based on:
 # JavaScript Soundfont Builder for MIDI.js
 # Author: 0xFE <mohit@muthanna.com>
 #
@@ -7,20 +8,15 @@
 #
 #   FluidSynth
 #   Lame
-#   OggEnc (from vorbis-tools)
 #   Ruby Gem: midilib
 #
-#   $ brew install --with-libsndfile fluidsynth
-#   $ brew install vorbis-tools lame
+#   $ sudo apt-get install fluidsynth lame
 #   $ gem install midilib
 #
 # You'll need to download a GM soundbank to generate audio.
 #
 # Usage:
-#
-# 1) Install the above dependencies.
-# 2) Edit BUILD_DIR, SOUNDFONT, and INSTRUMENTS as required.
-# 3) Run without any argument.
+# ruby soundfont_builder.rb <artifact_file> <artifact_id>
 
 require 'base64'
 require 'fileutils'
@@ -28,35 +24,40 @@ require 'midilib'
 require 'zlib'
 include FileUtils
 
-BUILD_DIR = "./soundfont" # Output path
-SOUNDFONT = "../DOOM__SNES__Soundfont.sf2" # Soundfont file path
+if ARGV.length < 2 then
+  puts("Usage: ruby soundfont_builder.rb <artifact_file> <artifact_id>")
+  exit
+end
+
+SOUNDFONT = ARGV[0] # Soundfont file path
+ARTIFACT_ID = ARGV[1]
+BUILD_DIR = File.expand_path("..", __dir__) + "/soundfonts/" + ARTIFACT_ID # Output path
+
+# Create directory for artifact soundfonts
+mkdir_p "#{BUILD_DIR}"
 
 # This script will generate MIDI.js-compatible instrument JS files for
 # all instruments in the below array. Add or remove as necessary.
 INSTRUMENTS = [
-  0     # Acoustic Grand Piano
+  0,     # Acoustic Grand Piano
+  24,    # Acoustic Guitar (nylon)
+  25,    # Acoustic Guitar (steel)
+  26,    # Electric Guitar (jazz)
+  30,    # Distortion Guitar
+  33,    # Electric Bass (finger)
+  34,    # Electric Bass (pick)
+  56,    # Trumpet
+  61,    # Brass Section
+  64,    # Soprano Sax
+  65,    # Alto Sax
+  66,    # Tenor Sax
+  67,    # Baritone Sax
+  73,    # Flute
+  118    # Synth Drum
 ];
-# INSTRUMENTS = [
-#   0,     # Acoustic Grand Piano
-#   24,    # Acoustic Guitar (nylon)
-#   25,    # Acoustic Guitar (steel)
-#   26,    # Electric Guitar (jazz)
-#   30,    # Distortion Guitar
-#   33,    # Electric Bass (finger)
-#   34,    # Electric Bass (pick)
-#   56,    # Trumpet
-#   61,    # Brass Section
-#   64,    # Soprano Sax
-#   65,    # Alto Sax
-#   66,    # Tenor Sax
-#   67,    # Baritone Sax
-#   73,    # Flute
-#   118    # Synth Drum
-# ];
 
 # The encoders and tools are expected in your PATH. You can supply alternate
 # paths by changing the constants below.
-OGGENC = `which oggenc`.chomp
 LAME = `which lame`.chomp
 FLUIDSYNTH = `which fluidsynth`.chomp
 
@@ -68,7 +69,6 @@ INSTRUMENTS.each do |i|
 end
 
 puts
-puts "Using OGG encoder: " + OGGENC
 puts "Using MP3 encoder: " + LAME
 puts "Using FluidSynth encoder: " + FLUIDSYNTH
 puts
@@ -76,13 +76,12 @@ puts "Sending output to: " + BUILD_DIR
 puts
 
 raise "Can't find soundfont: #{SOUNDFONT}" unless File.exists? SOUNDFONT
-raise "Can't find 'oggenc' command" if OGGENC.empty?
 raise "Can't find 'lame' command" if LAME.empty?
 raise "Can't find 'fluidsynth' command" if FLUIDSYNTH.empty?
 raise "Output directory does not exist: #{BUILD_DIR}" unless File.exists?(BUILD_DIR)
 
-puts "Hit return to begin."
-$stdin.readline
+#puts "Hit return to begin."
+#$stdin.readline
 
 NOTES = {
   "C"  => 0,
@@ -152,9 +151,8 @@ def run_command(cmd)
 end
 
 def midi_to_audio(source, target)
-  run_command "#{FLUIDSYNTH} -C no -R no -g 0.5 -F #{target} #{SOUNDFONT} #{source}"
-  run_command "#{OGGENC} -m 32 -M 128 #{target}"
-  run_command "#{LAME} -v -b 8 -B 64 #{target}"
+  run_command "#{FLUIDSYNTH} -C no -R no -g 0.5 -F '#{target}' '#{SOUNDFONT}' '#{source}'"
+  run_command "#{LAME} -v -b 8 -B 64 '#{target}'"
   rm target
 end
 
@@ -189,7 +187,6 @@ def generate_audio(program)
   puts "Generating audio for: " + instrument + "(#{instrument_key})"
 
   mkdir_p "#{BUILD_DIR}/#{instrument_key}-mp3"
-  ogg_js_file = open_js_file(instrument_key, "ogg")
   mp3_js_file = open_js_file(instrument_key, "mp3")
 
   note_to_int("A", 0).upto(note_to_int("C", 8)) do |note_value|
@@ -202,20 +199,14 @@ def generate_audio(program)
     midi_to_audio(TEMP_FILE, output_path_prefix + ".wav")
 
     puts "Updating JS files..."
-    ogg_js_file.write(base64js(output_name, output_path_prefix + ".ogg", "ogg") + ",\n")
     mp3_js_file.write(base64js(output_name, output_path_prefix + ".mp3", "mp3") + ",\n")
 
-    mv output_path_prefix + ".mp3", "#{BUILD_DIR}/#{instrument_key}-mp3"
-    rm output_path_prefix + ".ogg"
+    FileUtils.remove_dir("#{BUILD_DIR}/#{instrument_key}-mp3", true)
+    rm output_path_prefix + ".mp3"
     rm TEMP_FILE
   end
 
-  close_js_file(ogg_js_file)
   close_js_file(mp3_js_file)
-
-  ogg_js_file = File.read("#{BUILD_DIR}/#{instrument_key}-ogg.js")
-  ojsz = File.open("#{BUILD_DIR}/#{instrument_key}-ogg.js.gz", "w")
-  ojsz.write(deflate(ogg_js_file, 9));
 
   mp3_js_file = File.read("#{BUILD_DIR}/#{instrument_key}-mp3.js")
   mjsz = File.open("#{BUILD_DIR}/#{instrument_key}-mp3.js.gz", "w")
