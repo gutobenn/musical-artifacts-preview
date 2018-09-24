@@ -1,5 +1,6 @@
 .Midi {
   position: relative;
+  padding-bottom: 25px;
 }
 .Midi .ReactPiano__Keyboard {
   margin-top: 40px;

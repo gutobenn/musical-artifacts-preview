@@ -1,5 +1,6 @@
 .Guitarix {
   position: relative;
+  padding-bottom: 25px;
 }
 .Guitarix .Select {
   width: calc(50% - 52px);
