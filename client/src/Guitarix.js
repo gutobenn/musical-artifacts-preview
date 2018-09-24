@@ -27,6 +27,7 @@ class Guitarix extends Component {
       record: null,
       processedFiles: [],
       loadingMessage: null,
+      alreadyUploadedFilename: null,
     };
     this.handleToggleRecording = this.handleToggleRecording.bind(this);
     this.handleSelectArtifact = this.handleSelectArtifact.bind(this);
@@ -69,7 +70,7 @@ class Guitarix extends Component {
   }
 
   onStop(recordedBlob) {
-    this.setState({ record: recordedBlob });
+    this.setState({ record: recordedBlob, alreadyUploadedFilename: null });
   }
 
   handleToggleRecording(){
@@ -88,7 +89,7 @@ class Guitarix extends Component {
   }
 
   handleStartProcessing() {
-    const { artifacts, artifactToTest, record , presetToTest, isProcessing, processedFiles } = this.state;
+    const { alreadyUploadedFilename, artifacts, artifactToTest, record , presetToTest, isProcessing, processedFiles } = this.state;
     const intl = this.props.intl;
 
     if (presetToTest === null || artifactToTest === null || record === null || isProcessing) {
@@ -100,9 +101,13 @@ class Guitarix extends Component {
     const method = "POST";
     var body = new FormData();
     body.append('mode', 'guitarix');
-    body.append('file', record.blob);
     body.append('preset', presetToTest);
     body.append('artifact', artifactToTest);
+    if (alreadyUploadedFilename !== null) {
+      body.append('filename', alreadyUploadedFilename);
+    } else {
+      body.append('file', record.blob);
+    }
     fetch(this.API_URL + "/order", { method, body })
       .then(res => res.json())
       .then(data => {
@@ -131,7 +136,7 @@ class Guitarix extends Component {
                  file: data.processed_file,
                  order: data.id
                };
-               this.setState({ isProcessing: false, processedFiles: [processed_file, ...processedFiles], loadingMessage: intl.formatMessage({ id: "done" })});
+               this.setState({ isProcessing: false, processedFiles: [processed_file, ...processedFiles], loadingMessage: intl.formatMessage({ id: "done" }), alreadyUploadedFilename: data.filename});
                setTimeout(function(){
                  this.setState({ loadingMessage: null });
                }
@@ -140,7 +145,7 @@ class Guitarix extends Component {
              } else if (data.status === "queue"){
                this.setState({ loadingMessage: intl.formatMessage({ id: "queue_position"}, { position_in_queue: data.position_in_queue })});
              } else if (data.status === 'processing') {
-               this.setState({ loadingMessage: intl.formatMessage({ id: "processing_record" })});
+               this.setState({ loadingMessage: intl.formatMessage({ id: "processing_record" }) });
              }
            })
            .catch( error => {

@@ -25,15 +25,14 @@ const currentDomain = 'https://preview-api.musical-artifacts.com';
 let orders = {};
 let queue = [];
 
-function addOrder(mode, file, artifact, preset) {
+function addOrder(mode, filename, artifact, preset) {
   const id = uuidv4();
-  // success case, the file was saved
   orders[id] = {
     mode,
     status: 'queue',
     artifact,
     preset,
-    filename: file.filename
+    filename
   };
   queue.push(id);
   return id;
@@ -55,23 +54,23 @@ function processQueue(){
                   __dirname + '/processed_files/' + [order_id]]);
 
     var childProcess = promise.childProcess;
-    console.log('[spawn] childProcess.pid: ', childProcess.pid);
+    console.log('[process_audio] childProcess.pid: ', childProcess.pid);
 
     childProcess.stdout.on('data', function (data) {
-      console.log('[spawn] stdout: ', data.toString());
+      console.log('[process_audio] stdout: ', data.toString());
     });
     childProcess.stderr.on('data', function (data) {
-      console.log('[spawn] stderr: ', data.toString());
+      console.log('[process_audio] stderr: ', data.toString());
     });
 
     promise.then(function () {
-        console.log('[spawn] done!');
+        console.log('[process_audio] done!');
         orders[order_id].processed_file = currentDomain + '/' + relative_order_dir_path + '/output.mp3';
         orders[order_id].status = 'done';
         processQueue();
       })
       .catch(function (err) {
-        console.error('[spawn] ERROR: ', err);
+        console.error('[process_audio] ERROR: ', err);
         orders[order_id].status = 'error';
         processQueue();
       });
@@ -104,10 +103,11 @@ app.post('/order', upload.single('file'), (req, res, next) => {
   if (!req.body || !req.body.preset) {
     return next({ status: 400, message: 'preset field is required' });
   }
-  if (!req.file) {
-    return next({ status: 400, message: 'file field is required' });
+  if (!req.file && !req.body.filename) {
+    return next({ status: 400, message: 'file or filename field is required' });
   }
-  const id = addOrder(req.body.mode, req.file, req.body.artifact, req.body.preset);
+  const filename = req.body.filename ? req.body.filename : req.file.filename;
+  const id = addOrder(req.body.mode, filename, req.body.artifact, req.body.preset);
   res.status(200).json({ id, success: true });
 });
 

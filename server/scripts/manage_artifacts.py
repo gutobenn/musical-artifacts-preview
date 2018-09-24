@@ -126,7 +126,7 @@ def update_soundfonts_artifacts():
 
         print("Checking artifacts...")
         for i, artifact in enumerate(artifacts):
-            if i == 3:
+            if i == 10:
                 break
             artifact_on_db = Database().get_artifact(artifact["id"])
             # TODO optimization: get all artifacts in only one sql query in the beginning

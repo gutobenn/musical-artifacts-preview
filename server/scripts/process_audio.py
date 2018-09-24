@@ -26,11 +26,12 @@ def processFile(artifactId, preset, input_file, output_dir):
         if not Database().get_artifact(artifactId):
             raise ValueError("-> Artifact not available...")
 
-        print("-> Converting file to WAV...")
-        ffmpeg_process = subprocess.Popen("ffmpeg -i '" + input_file + "' -c:v copy '" + input_converted_file + "'", shell=True, stdout=subprocess.PIPE)
-        ffmpeg_process.wait()
-        if ffmpeg_process.returncode != 0:
-            raise ValueError("Could not convert file to WAV")
+        if not os.path.isfile(input_converted_file):
+            print("-> Converting file to WAV...")
+            ffmpeg_process = subprocess.Popen("ffmpeg -i '" + input_file + "' -c:v copy '" + input_converted_file + "'", shell=True, stdout=subprocess.PIPE)
+            ffmpeg_process.wait()
+            if ffmpeg_process.returncode != 0:
+                raise ValueError("Could not convert file to WAV")
 
         print("-> Starting file2jack...")
         file2jack_process = subprocess.Popen("cd jack-file && ./file2jack -at 0 -i '" + input_converted_file + "'", shell=True, stdout=subprocess.PIPE)
@@ -39,7 +40,8 @@ def processFile(artifactId, preset, input_file, output_dir):
         nc = nclib.Netcat(('localhost', 7000), verbose=True)
         jsonrpc_msg = '{"jsonrpc":"2.0","method":"setpreset","params":["ma-' + str(artifactId) + '","' + preset + '"]}\n'
         nc.send(bytes(jsonrpc_msg, 'utf-8'))
-        # TODO check return to guarantee it succeeded
+        # TODO instead of Netcat, create a RpcSocket like Guitarix itself does https://sourceforge.net/p/guitarix/git/ci/master/tree/trunk/specmatch/specmatch/guitarix.py
+        # TODO check if it succeeded
 
         # Wait until both ports file2jack and guitarix ports are available
         print("Waiting for file2jack and guitarix ports setup..."),
