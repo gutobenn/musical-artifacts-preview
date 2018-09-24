@@ -1,0 +1,14 @@
+.SelectArtifact select {
+  width: calc(100% - 22px);
+}
+.SelectArtifact .linkImage {
+  margin-left: 8px;
+  margin-top: 7px;
+  width: 14px;
+  opacity: 0.75;
+}
+.SelectArtifact .linkImage:hover, .SelectArtifact .linkImage:focus {
+  opacity: 1;
+}
+
+/*# sourceMappingURL=SelectArtifact.css.map */

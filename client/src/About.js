@@ -19,6 +19,7 @@ class About extends Component {
           <li>Download by Vivian Lai from the Noun Project</li>
           <li>drum kit by Tom Fricker from the Noun Project</li>
           <li>forward by andriwidodo from the Noun Project</li>
+          <li>Arrow by Iconographer from the Noun Project</li>
         </ul>
       </div>
     );

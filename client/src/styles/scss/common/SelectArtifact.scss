@@ -1,0 +1,17 @@
+.SelectArtifact {
+  select {
+    width: calc(100% - 22px);
+  }
+
+  .linkImage {
+    margin-left: 8px;
+    margin-top: 7px;
+    width: 14px;
+    opacity: 0.75;
+
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
+  }
+}

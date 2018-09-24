@@ -48,7 +48,7 @@ class Midi extends Component {
         last: MidiNumbers.fromNote('c5'),
       },
       loadingMessage: null,
-      isLoaded: false 
+      isLoaded: false
     };
   }
 
@@ -63,9 +63,9 @@ class Midi extends Component {
           const ordered_result = sortBy(result, [function(o) { return o.name.toUpperCase(); }]);
           this.setState({
             artifacts: ordered_result,
-            artifactToTest: ordered_result[0].ma_id,
+            artifactToTest: String(ordered_result[0].ma_id),
             loadingMessage: null,
-            isLoaded: true		  
+            isLoaded: true
           });
         },
         (error) => {
@@ -77,7 +77,8 @@ class Midi extends Component {
   }
 
   handleSelectArtifact(e) {
-    this.setState({ artifactToTest: e.target.value });
+    console.log(e.target.value);
+    this.setState({ artifactToTest: String(e.target.value) });
   }
 
   handleChangeNumberOfKeys(e) {
@@ -111,8 +112,8 @@ class Midi extends Component {
           <Select nameId="select_midi_instrument" onChange={this.handleSelectInstrument.bind(this)}  options={instruments}/>
           <Select nameId="select_number_keys" onChange={this.handleChangeNumberOfKeys.bind(this)} options={['25', '49', '88']}/>
         </div>
-        <div class="clearfix"></div>
-        { isLoaded && 
+        <div className="clearfix"></div>
+        { isLoaded &&
           <ResponsivePiano noteRange={noteRange} instrument={instrument} soundfont={artifactToTest}/>}
         <Footer artifactFileFormat="sf2"/>
       </div>
