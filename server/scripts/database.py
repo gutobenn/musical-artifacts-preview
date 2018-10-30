@@ -30,14 +30,9 @@ class Database:
             conn = sqlite3.connect(self.database_file)
             cursor = conn.cursor()
 
-            if filetype == "gx":
-                cursor.execute("""
-                SELECT ma_id, name, presets FROM artifacts WHERE filetype = 'gx'
-                """)
-            else:
-                cursor.execute("""
-                SELECT ma_id, name FROM artifacts WHERE filetype = 'sf2'
-                """)
+            cursor.execute("""
+            SELECT ma_id, name, options FROM artifacts WHERE filetype=?
+            """, (filetype,))
 
             results = cursor.fetchall()
             conn.close()
@@ -64,7 +59,7 @@ class Database:
             print("Unexpected error on get_artifact:", sys.exc_info()[0])
             raise
 
-    def upsert_artifact(self, id, name, file_hash, presets, filetype):
+    def upsert_artifact(self, id, name, file_hash, options, filetype):
         try:
             conn = sqlite3.connect(self.database_file)
             cursor = conn.cursor()
@@ -73,15 +68,15 @@ class Database:
                 print("Updating...")
                 cursor.execute("""
                 UPDATE artifacts
-                SET name = ?, file_hash = ?, presets = ?, filetype = ?, updated_at = ?
+                SET name = ?, file_hash = ?, options = ?, filetype = ?, updated_at = ?
                 WHERE ma_id = ?
-                """, (name, file_hash, presets, filetype, datetime.datetime.now(), id))
+                """, (name, file_hash, options, filetype, datetime.datetime.now(), id))
             else:
                 print("Inserting...")
                 cursor.execute("""
-                INSERT INTO artifacts (ma_id, name, file_hash, presets, filetype, updated_at)
+                INSERT INTO artifacts (ma_id, name, file_hash, options, filetype, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?)
-                """, (id, name, file_hash, presets, filetype, datetime.datetime.now()))
+                """, (id, name, file_hash, options, filetype, datetime.datetime.now()))
 
             conn.commit()
             conn.close()
@@ -118,7 +113,7 @@ class Database:
                     ma_id INTEGER NOT NULL,
                     name TEXT,
                     file_hash TEXT,
-                    presets TEXT,
+                    options TEXT,
                     filetype TEXT,
                     updated_at DATE NOT NULL
             );

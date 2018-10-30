@@ -24,12 +24,13 @@ require 'midilib'
 include FileUtils
 
 if ARGV.length < 2 then
-  puts("Usage: ruby soundfont_builder.rb <artifact_file> <artifact_id>")
+  puts("Usage: ruby soundfont_builder.rb <artifact_file> <artifact_id> <instruments_separated_by_space>")
   exit
 end
 
 SOUNDFONT = ARGV[0] # Soundfont file path
 ARTIFACT_ID = ARGV[1]
+INSTRUMENTS = ARGV[2].split(' ').map(&:to_i)
 BUILD_DIR = File.expand_path("..", __dir__) + "/soundfonts/" + ARTIFACT_ID # Output path
 
 # Create directory for artifact soundfonts
@@ -37,23 +38,24 @@ mkdir_p "#{BUILD_DIR}"
 
 # This script will generate MIDI.js-compatible instrument JS files for
 # all instruments in the below array. Add or remove as necessary.
-INSTRUMENTS = [
-  0,     # Acoustic Grand Piano
-  24,    # Acoustic Guitar (nylon)
-  25,    # Acoustic Guitar (steel)
-  26,    # Electric Guitar (jazz)
-  30,    # Distortion Guitar
-  33,    # Electric Bass (finger)
-  34,    # Electric Bass (pick)
-  56,    # Trumpet
-  61,    # Brass Section
-  64,    # Soprano Sax
-  65,    # Alto Sax
-  66,    # Tenor Sax
-  67,    # Baritone Sax
-  73,    # Flute
-  118    # Synth Drum
-];
+#INSTRUMENTS = [
+#  0,     # Acoustic Grand Piano
+#  24,    # Acoustic Guitar (nylon)
+#  25,    # Acoustic Guitar (steel)
+#  26,    # Electric Guitar (jazz)
+#  30,    # Distortion Guitar
+#  33,    # Electric Bass (finger)
+#  34,    # Electric Bass (pick)
+#  56,    # Trumpet
+#  61,    # Brass Section
+#  64,    # Soprano Sax
+#  65,    # Alto Sax
+#  66,    # Tenor Sax
+#  67,    # Baritone Sax
+#  73,    # Flute
+#  118    # Synth Drum
+#];
+
 
 # The encoders and tools are expected in your PATH. You can supply alternate
 # paths by changing the constants below.
@@ -174,7 +176,8 @@ end
 def generate_audio(program)
   include MIDI
   instrument = GM_PATCH_NAMES[program]
-  instrument_key = instrument.downcase.gsub(/[^a-z0-9 ]/, "").gsub(/\s+/, "_")
+  #instrument_key = instrument.downcase.gsub(/[^a-z0-9 ]/, "").gsub(/\s+/, "_")
+  instrument_key = program.to_s
 
   puts "Generating audio for: " + instrument + "(#{instrument_key})"
 

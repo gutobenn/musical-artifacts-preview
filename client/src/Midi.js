@@ -26,22 +26,8 @@ class Midi extends Component {
     this.state = {
       artifacts: [],
       artifactToTest: null,
-      instrument: "acoustic_grand_piano",
-      instruments: ['acoustic_grand_piano',
-                  'acoustic_guitar_nylon',
-                  'acoustic_guitar_steel',
-                  'electric_guitar_jazz',
-                  'distortion_guitar',
-                  'electric_bass_finger',
-                  'electric_bass_pick',
-                  'trumpet',
-                  'brass_section',
-                  'soprano_sax',
-                  'alto_sax',
-                  'tenor_sax',
-                  'baritone_sax',
-                  'flute',
-                  'synth_drum'],
+      instrument: "0",
+      instruments: [],
       numberOfKeys: '25',
       noteRange: {
         first: MidiNumbers.fromNote('c3'),
@@ -64,6 +50,8 @@ class Midi extends Component {
           this.setState({
             artifacts: ordered_result,
             artifactToTest: String(ordered_result[0].ma_id),
+            instruments: ordered_result[0].instruments,
+            instrument: this.convertInstrumentName(ordered_result[0].instruments[0]),
             loadingMessage: null,
             isLoaded: true
           });
@@ -75,10 +63,16 @@ class Midi extends Component {
         }
       );
   }
+  
+  convertInstrumentName(s){
+    return parseInt(s.slice(0,3));
+  }
 
   handleSelectArtifact(e) {
-    console.log(e.target.value);
-    this.setState({ artifactToTest: String(e.target.value) });
+    const { artifacts } = this.state;
+    const artifactId = e.target.value;
+    const artifact_instruments = artifacts.find(a => a.ma_id.toString() === artifactId).instruments;
+    this.setState({ artifactToTest: artifactId, instruments: artifacts.find(a => a.ma_id.toString() === artifactId).instruments, instrument: this.convertInstrumentName(artifact_instruments[0]) });
   }
 
   handleChangeNumberOfKeys(e) {
@@ -98,7 +92,7 @@ class Midi extends Component {
   }
 
   handleSelectInstrument(e) {
-    this.setState({ instrument: e.target.value });
+    this.setState({ instrument: this.convertInstrumentName(e.target.value) });
   }
 
   render() {

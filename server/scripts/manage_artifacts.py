@@ -7,6 +7,7 @@ import os
 import subprocess
 import urllib.request
 import urllib.parse
+import re
 from pathlib import Path
 from database import Database
 
@@ -48,18 +49,29 @@ def download_soundfont_artifact(id, loadedArtifact=None):
         filename = os.path.dirname(os.path.abspath(__file__)) + '/../soundfonts/' + str(id) + '.sf2'
         urllib.request.urlretrieve(artifact["file"], filename)
 
+
+        file_list = [x for x in artifact["file_list"] if "EOP" not in x]
+
         print('Generating soundfonts...')
-        soundfont_generator_process = subprocess.Popen("ruby '" + os.path.dirname(os.path.abspath(__file__)) + "/soundfont_builder.rb' '" + filename + "' " + str(id), shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=0)
+        list_of_instruments = [int(x[:3]) for x in file_list]
+        list_of_instruments = [x for x in list_of_instruments if x <= 127]
+        assert len(list_of_instruments) == len(set(list_of_instruments)) # no duplicated elements (no multiple banks in a file)
+        instruments = re.sub('[,]', '', str(list_of_instruments).strip('[]'))
+        assert len(instruments) > 0
+
+        print("ruby '" + os.path.dirname(os.path.abspath(__file__)) + "/soundfont_builder.rb' '" + filename + "' " + str(id) + " '" + instruments + "' ")
+        soundfont_generator_process = subprocess.Popen("ruby '" + os.path.dirname(os.path.abspath(__file__)) + "/soundfont_builder.rb' '" + filename + "' " + str(id) + " '" + instruments + "' ", shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE, bufsize=0)
         stdout = soundfont_generator_process.communicate()[0]
         soundfont_generator_process.wait()
         assert soundfont_generator_process.returncode == 0
 
         print('Saving on database...')
-        Database().upsert_artifact(id, artifact["name"], artifact["file_hash"], "", "sf2")
+        Database().upsert_artifact(id, artifact["name"], artifact["file_hash"], json.dumps(file_list), "sf2")
 
         print('Done!')
-    except:
+    except Exception as ex:
         print("Unexpected error on download_soundfont_artifact:", sys.exc_info()[0])
+        print(ex)
 
 def get_bank_presets(filename):
     try:
@@ -85,7 +97,7 @@ def update_guitarix_artifacts():
         print("Checking artifacts...")
         for artifact in artifacts:
             if artifact["id"] == 409:
-                pass # TODO FIXME artifact 409 raises an exception because of it's 'nil' values on .gx file
+                continue # TODO FIXME artifact 409 raises an exception because of it's 'nil' values on .gx file.
             artifact_on_db = Database().get_artifact(artifact["id"])
             # TODO optimization: get all artifacts in only one sql query in the beginning
             if artifact_on_db:
@@ -126,8 +138,10 @@ def update_soundfonts_artifacts():
 
         print("Checking artifacts...")
         for i, artifact in enumerate(artifacts):
-            if i == 10:
+            if i == 3:
                 break
+            if artifact["id"] in [644, 641, 640, 635, 634, 633, 629]:
+                continue # TODO FIXME artifact 644 and 641 contain more than 1 bank. some are rar files
             artifact_on_db = Database().get_artifact(artifact["id"])
             # TODO optimization: get all artifacts in only one sql query in the beginning
             if artifact_on_db:
@@ -179,7 +193,7 @@ def generate_json():
 
         print("Generating Soundfonts json file...")
         artifacts_on_db = Database().get_all_artifacts_for_json("sf2")
-        all = [{'ma_id': a[0], 'name': a[1]} for a in artifacts_on_db]
+        all = [{'ma_id': a[0], 'name': a[1], 'instruments': json.loads(a[2])} for a in artifacts_on_db]
 
         soundfonts_json_path = os.path.dirname(os.path.abspath(__file__)) + '/../soundfonts.json'
         with open(soundfonts_json_path, 'w') as outfile:
@@ -191,8 +205,8 @@ def generate_json():
 def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('mode',
-                    choices=['list', 'update_guitarix', 'update_soundfonts', 'createdb'],
-                    help='Mode (list, update_guitarix, update_soundfonts or createdb)')
+                    choices=['list', 'update_guitarix', 'update_soundfonts', 'create_database'],
+                    help='Mode (list, update_guitarix, update_soundfonts or create_database)')
 
     args = parser.parse_args()
 
@@ -200,7 +214,7 @@ def main(argv):
         update_guitarix_artifacts()
     elif args.mode == "update_soundfonts":
         update_soundfonts_artifacts()
-    elif args.mode == "createdb":
+    elif args.mode == "create_database":
         Database().create_database()
     else:
         list_artifacts_db()
