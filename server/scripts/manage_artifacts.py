@@ -37,6 +37,7 @@ def download_guitarix_artifact(id, loadedArtifact=None):
         print("Unexpected error on download_guitarix_artifact:", sys.exc_info()[0])
 
 def download_soundfont_artifact(id, loadedArtifact=None):
+    filename = os.path.dirname(os.path.abspath(__file__)) + '/../soundfonts/' + str(id) + '.sf2'
     try:
         print('Getting artifact ' + str(id) + ' details...')
         if loadedArtifact == None:
@@ -46,9 +47,7 @@ def download_soundfont_artifact(id, loadedArtifact=None):
             artifact = loadedArtifact
 
         print('Downloading artifact...')
-        filename = os.path.dirname(os.path.abspath(__file__)) + '/../soundfonts/' + str(id) + '.sf2'
         urllib.request.urlretrieve(artifact["file"], filename)
-
 
         file_list = [x for x in artifact["file_list"] if "EOP" not in x]
 
@@ -68,8 +67,10 @@ def download_soundfont_artifact(id, loadedArtifact=None):
         print('Saving on database...')
         Database().upsert_artifact(id, artifact["name"], artifact["file_hash"], json.dumps(file_list), "sf2")
 
+        os.remove(filename)
         print('Done!')
     except Exception as ex:
+        os.remove(filename)
         print("Unexpected error on download_soundfont_artifact:", sys.exc_info()[0])
         print(ex)
 
@@ -138,8 +139,8 @@ def update_soundfonts_artifacts():
 
         print("Checking artifacts...")
         for i, artifact in enumerate(artifacts):
-            if i == 3:
-                break
+            #if i == 10:
+            #    break
             if artifact["id"] in [644, 641, 640, 635, 634, 633, 629]:
                 continue # TODO FIXME artifact 644 and 641 contain more than 1 bank. some are rar files
             artifact_on_db = Database().get_artifact(artifact["id"])
