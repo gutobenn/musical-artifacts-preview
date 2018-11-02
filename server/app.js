@@ -22,12 +22,12 @@ const currentDomain = 'https://preview-api.musical-artifacts.com';
 //app.use('/processed_files', express.static('processed_files');
 //app.use('/guitarix.json', express.static('guitarix.json'));
 
-let orders = {};
+let requests = {};
 let queue = [];
 
 function addOrder(mode, filename, artifact, preset) {
   const id = uuidv4();
-  orders[id] = {
+  requests[id] = {
     mode,
     status: 'queue',
     artifact,
@@ -40,18 +40,18 @@ function addOrder(mode, filename, artifact, preset) {
 
 function processQueue(){
   if (queue.length > 0) {
-    const order_id = queue.shift();
-    console.log("Processing " + order_id);
-    orders[order_id].status = 'processing';
-    delete orders[order_id].position_in_queue;
+    const request_id = queue.shift();
+    console.log("Processing " + request_id);
+    requests[request_id].status = 'processing';
+    delete requests[request_id].position_in_queue;
 
-    const relative_order_dir_path = 'processed_files/' + order_id;
+    const relative_request_dir_path = 'processed_files/' + request_id;
     var promise = spawn('python3',
                   ['./scripts/process_audio.py',
-                  orders[order_id].artifact,
-                  orders[order_id].preset,
-                  __dirname + '/uploads/' + orders[order_id].filename,
-                  __dirname + '/processed_files/' + [order_id]]);
+                  requests[request_id].artifact,
+                  requests[request_id].preset,
+                  __dirname + '/uploads/' + requests[request_id].filename,
+                  __dirname + '/processed_files/' + [request_id]]);
 
     var childProcess = promise.childProcess;
     console.log('[process_audio] childProcess.pid: ', childProcess.pid);
@@ -65,13 +65,13 @@ function processQueue(){
 
     promise.then(function () {
         console.log('[process_audio] done!');
-        orders[order_id].processed_file = currentDomain + '/' + relative_order_dir_path + '/output.mp3';
-        orders[order_id].status = 'done';
+        requests[request_id].processed_file = currentDomain + '/' + relative_request_dir_path + '/output.mp3';
+        requests[request_id].status = 'done';
         processQueue();
       })
       .catch(function (err) {
         console.error('[process_audio] ERROR: ', err);
-        orders[order_id].status = 'error';
+        requests[request_id].status = 'error';
         processQueue();
       });
   } else {
@@ -87,11 +87,11 @@ function timeOut(ms) {
 
 processQueue();
 
-app.get('/orders', (req, res) => res.status(200).json({'orders': orders}));
+app.get('/requests', (req, res) => res.status(200).json({'requests': requests}));
 
 app.get('/queue', (req, res) => res.status(200).json(queue));
 
-app.post('/order', upload.single('file'), (req, res, next) => {
+app.post('/request', upload.single('file'), (req, res, next) => {
   if (!req.body || !req.body.mode) {
     return next({ status: 400, message: 'mode field is required' });
   } else if (req.body.mode !== "guitarix") {
@@ -111,8 +111,8 @@ app.post('/order', upload.single('file'), (req, res, next) => {
   res.status(200).json({ id, success: true });
 });
 
-app.get('/order/:id', (req, res) => {
-  const result = orders[req.params.id]; // TODO verify if req.params.id exist
+app.get('/request/:id', (req, res) => {
+  const result = requests[req.params.id]; // TODO verify if req.params.id exist
   if (!result) {
     return next({ status: 404, message: 'not found' });
   }

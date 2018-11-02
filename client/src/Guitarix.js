@@ -108,13 +108,13 @@ class Guitarix extends Component {
     } else {
       body.append('file', record.blob);
     }
-    fetch(this.API_URL + "/order", { method, body })
+    fetch(this.API_URL + "/request", { method, body })
       .then(res => res.json())
       .then(data => {
         this.setState({ loadingMessage: null });
 
         this.interval = setInterval(() => {
-          fetch(this.API_URL + "/order/" + data.id)
+          fetch(this.API_URL + "/request/" + data.id)
            .then(res => res.json())
            .then(data => {
              console.log(data);
@@ -134,7 +134,7 @@ class Guitarix extends Component {
                  artifactName: artifacts.find(a => a.ma_id.toString() === data.artifact).name,
                  preset: data.preset,
                  file: data.processed_file,
-                 order: data.id
+                 request: data.id
                };
                this.setState({ isProcessing: false, processedFiles: [processed_file, ...processedFiles], loadingMessage: intl.formatMessage({ id: "done" }), alreadyUploadedFilename: data.filename});
                setTimeout(function(){
