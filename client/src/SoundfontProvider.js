@@ -11,6 +11,7 @@ class SoundfontProvider extends React.Component {
     this.state = {
       activeAudioNodes: {},
       instrument: null,
+      midiInputs: [],
     };
   }
 
@@ -40,9 +41,15 @@ class SoundfontProvider extends React.Component {
       if (navigator.requestMIDIAccess !== undefined) {
         window.navigator.requestMIDIAccess().then(
           (midiAccess) => {
+            this.state.midiInputs.forEach(function (oldMidiInput) {
+              oldMidiInput.onmidimessage = null;
+	    })
             midiAccess.inputs.forEach(function (midiInput) {
               instrument.listenToMidi(midiInput)
             })
+            this.setState({
+              midiInputs: midiAccess.inputs
+	    });
             console.log("TODO you can use your midi device to test it");
           },
           (e) => {
