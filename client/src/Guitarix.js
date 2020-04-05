@@ -253,10 +253,10 @@ class ProcessedFilesList extends React.Component {
            <ul className="list_of_recordings">
              {files.map((processed_file, index) => (
               <li key={processed_file.file}>
-                <a href={"https://musical-artifacts.com/artifacts/" + processed_file.artifactId} className="view_artifact" title={view_on_ma_string}  target="_blank">{processed_file.artifactName} - {processed_file.preset}</a>
+                <a href={"https://musical-artifacts.com/artifacts/" + processed_file.artifactId} className="view_artifact" title={view_on_ma_string}  target="_blank" rel="noopener noreferrer">{processed_file.artifactName} - {processed_file.preset}</a>
                 <div>
                   <Plyr type="audio" sources={[{ src: processed_file.file, type: 'audio/mp3' }]} className={"react-plyr-processed-" + index} />
-                  <a href={processed_file.file} target="_blank"><img src={download_image} alt={download_string} className="download_button"/></a>
+                  <a href={processed_file.file} target="_blank" rel="noopener noreferrer"><img src={download_image} alt={download_string} className="download_button"/></a>
                 </div>
               </li>
             ))}

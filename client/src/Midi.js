@@ -65,7 +65,7 @@ class Midi extends Component {
   }
   
   convertInstrumentName(s){
-    return parseInt(s.slice(0,3));
+    return parseInt(s.slice(0,3)).toString();
   }
 
   handleSelectArtifact(e) {
@@ -128,8 +128,8 @@ function ResponsivePiano(props) {
               <Piano
                 noteRange={props.noteRange}
                 width={containerWidth}
-                onPlayNote={playNote}
-                onStopNote={stopNote}
+                playNote={playNote}
+                stopNote={stopNote}
                 disabled={isLoading}
                 keyboardShortcuts={keyboardShortcuts}
               />

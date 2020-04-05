@@ -40,7 +40,7 @@ class SelectArtifact extends Component {
           ))}
         </select>
         { selectedArtifactId != null
-          && <a href={"https://musical-artifacts.com/artifacts/" + selectedArtifactId} target="_blank">
+          && <a href={"https://musical-artifacts.com/artifacts/" + selectedArtifactId} target="_blank" rel="noopener noreferrer">
                <img className="linkImage" src={link_image} alt={view_on_ma_string}/>
              </a>
          }
