@@ -5,6 +5,7 @@ import DimensionsProvider from './DimensionsProvider';
 import SoundfontProvider from './SoundfontProvider';
 import { Footer, Header, LoadingMessage, Select, SelectArtifact } from './common';
 import { sortBy } from 'lodash';
+import { connect } from 'react-redux';
 import 'react-piano/dist/styles.css';
 import "./styles/css/Midi.css";
 
@@ -39,7 +40,7 @@ class Midi extends Component {
   }
 
   componentDidMount() {
-    const intl = this.props.intl;
+    const { intl } = this.props;
     this.setState({ loadingMessage: intl.formatMessage({ id: "loading_soundfont_artifacts" })});
 
     fetch(this.SOUNDFONTS_JSON_URL)
@@ -54,6 +55,10 @@ class Midi extends Component {
             instrument: this.convertInstrumentName(ordered_result[0].instruments[0]),
             loadingMessage: null,
             isLoaded: true
+          }, () => {
+            if (this.props.defaultSoundfont !== undefined) {
+              this.setCurrentArtifact(this.props.defaultSoundfont); // TODO it's changing the artifacts, but not on select field
+            }
           });
         },
         (error) => {
@@ -63,14 +68,18 @@ class Midi extends Component {
         }
       );
   }
-  
+
   convertInstrumentName(s){
     return parseInt(s.slice(0,3)).toString();
   }
 
   handleSelectArtifact(e) {
-    const { artifacts } = this.state;
     const artifactId = e.target.value;
+    this.setCurrentArtifact(artifactId);
+  }
+
+  setCurrentArtifact(artifactId) {
+    const { artifacts } = this.state;
     const artifact_instruments = artifacts.find(a => a.ma_id.toString() === artifactId).instruments;
     this.setState({ artifactToTest: artifactId, instruments: artifacts.find(a => a.ma_id.toString() === artifactId).instruments, instrument: this.convertInstrumentName(artifact_instruments[0]) });
   }
@@ -97,20 +106,23 @@ class Midi extends Component {
 
   render() {
     const { artifacts, artifactToTest, isLoaded, noteRange, instrument, instruments, loadingMessage } = this.state;
+    const { embedded } = this.props;
     return (
       <div className="Midi">
         <Header titleId="header_midi" />
         <LoadingMessage message={loadingMessage} />
-        <div>
-          <SelectArtifact onChange={this.handleSelectArtifact.bind(this)} artifacts={artifacts} />
+        <div className="Selects-Container">
+          { ! embedded && <SelectArtifact onChange={this.handleSelectArtifact.bind(this)} artifacts={artifacts} /> }
           <Select nameId="select_midi_instrument" onChange={this.handleSelectInstrument.bind(this)}  options={instruments}/>
           <Select nameId="select_number_keys" onChange={this.handleChangeNumberOfKeys.bind(this)} options={['25', '49', '88']}/>
         </div>
         <div className="clearfix"></div>
         { isLoaded &&
           <ResponsivePiano noteRange={noteRange} instrument={instrument} soundfont={artifactToTest}/>}
-        <Footer artifactFileFormat="sf2"/>
+        { ! embedded &&
+          <Footer artifactFileFormat="sf2"/>}
       </div>
+      // TODO display error message if artifact does not exist
     );
   }
 }
@@ -140,4 +152,10 @@ function ResponsivePiano(props) {
   );
 }
 
-export default injectIntl(Midi);
+const mapStateToProps = state => ({
+  embedded: state.embedded,
+  defaultSoundfont: state.defaultSoundfont
+});
+
+export default injectIntl(connect(mapStateToProps, null)(Midi));
+

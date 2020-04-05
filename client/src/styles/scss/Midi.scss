@@ -6,12 +6,19 @@
     margin-top: 40px;
   }
 
-  .Select {
-    width: calc(33% - 28px);
-    margin-right: 10px;
+  .Selects-Container {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    flex-basis: 0;
 
-    &:last-of-type {
-      margin-right: 0;
+    .Select {
+      margin-right: 10px;
+      width: 100%;
+
+      &:last-of-type {
+        margin-right: 0;
+      }
     }
   }
 }
