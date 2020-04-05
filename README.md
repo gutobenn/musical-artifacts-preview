@@ -1,6 +1,4 @@
 # Musical Artifacts Preview
 Preview [musical artifacts](https://musical-artifacts.com) directly in the browser.
 
-[Check it out](https://preview.musical-artifacts.com)
-
-Instructions for setup are available on [our wiki](https://github.com/gutobenn/musical-artifacts-preview/wiki).
+[Setup instructions](https://github.com/gutobenn/musical-artifacts-preview/wiki).
