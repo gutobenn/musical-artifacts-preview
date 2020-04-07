@@ -35,7 +35,8 @@ class Midi extends Component {
         last: MidiNumbers.fromNote('c5'),
       },
       loadingMessage: null,
-      isLoaded: false
+      isLoaded: false,
+      isNotFound: false,
     };
   }
 
@@ -80,8 +81,13 @@ class Midi extends Component {
 
   setCurrentArtifact(artifactId) {
     const { artifacts } = this.state;
-    const artifact_instruments = artifacts.find(a => a.ma_id.toString() === artifactId).instruments;
-    this.setState({ artifactToTest: artifactId, instruments: artifacts.find(a => a.ma_id.toString() === artifactId).instruments, instrument: this.convertInstrumentName(artifact_instruments[0]) });
+    const found_artifact = artifacts.find(a => a.ma_id.toString() === artifactId);
+    if (found_artifact === undefined) {
+      this.setState({ isNotFound: true });
+    } else {
+      const artifact_instruments = found_artifact.instruments;
+      this.setState({ artifactToTest: artifactId, instruments: artifact_instruments, instrument: this.convertInstrumentName(artifact_instruments[0]) });
+    }
   }
 
   handleChangeNumberOfKeys(e) {
@@ -105,14 +111,20 @@ class Midi extends Component {
   }
 
   render() {
-    const { artifacts, artifactToTest, isLoaded, noteRange, instrument, instruments, loadingMessage } = this.state;
-    const { embedded } = this.props;
-    return (
+    const { artifacts, artifactToTest, isLoaded, isNotFound, noteRange, instrument, instruments, loadingMessage } = this.state;
+    const { embedded, defaultSoundfont } = this.props;
+
+    if (isNotFound) {
+      return (
+          <div>Preview not available</div> // TODO i18n
+      )
+    } else return (
       <div className="Midi">
-        <Header titleId="header_midi" />
+        { ! embedded &&
+          <Header titleId="header_midi" /> }
         <LoadingMessage message={loadingMessage} />
         <div className="Selects-Container">
-          { ! embedded && <SelectArtifact onChange={this.handleSelectArtifact.bind(this)} artifacts={artifacts} /> }
+          { defaultSoundfont === null && <SelectArtifact onChange={this.handleSelectArtifact.bind(this)} artifacts={artifacts} /> }
           <Select nameId="select_midi_instrument" onChange={this.handleSelectInstrument.bind(this)}  options={instruments}/>
           <Select nameId="select_number_keys" onChange={this.handleChangeNumberOfKeys.bind(this)} options={['25', '49', '88']}/>
         </div>
@@ -120,9 +132,8 @@ class Midi extends Component {
         { isLoaded &&
           <ResponsivePiano noteRange={noteRange} instrument={instrument} soundfont={artifactToTest}/>}
         { ! embedded &&
-          <Footer artifactFileFormat="sf2"/>}
+          <Footer artifactFileFormat="sf2"/> }
       </div>
-      // TODO display error message if artifact does not exist
     );
   }
 }

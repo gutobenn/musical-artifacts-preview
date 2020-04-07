@@ -1,7 +1,7 @@
 body {
-  background: #f8f8f8;
   font-family: "Lato", sans-serif;
   font-size: 1rem;
+  margin: 0;
 }
 
 a {
@@ -23,12 +23,8 @@ b, strong {
 }
 
 #root {
-  max-width: 750px;
-  background: #fff;
   margin: 0 auto;
-  min-height: 500px;
   display: grid;
-  padding: 15px;
 }
 
 /*# sourceMappingURL=Root.css.map */
