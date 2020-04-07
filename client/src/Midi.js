@@ -56,7 +56,7 @@ class Midi extends Component {
             loadingMessage: null,
             isLoaded: true
           }, () => {
-            if (this.props.defaultSoundfont !== undefined) {
+            if (this.props.defaultSoundfont !== null) {
               this.setCurrentArtifact(this.props.defaultSoundfont); // TODO it's changing the artifacts, but not on select field
             }
           });
